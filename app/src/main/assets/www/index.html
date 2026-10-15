@@ -1,0 +1,633 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LUPCE Player</title>
+<meta name="theme-color" content="#0f6e6a">
+<style>
+:root{
+  --bg:#fbf6ec; --card:#ffffff; --ink:#1f2a2e; --muted:#5f6b6f; --line:#e8dfcf;
+  --teal:#0f6e6a; --teal-soft:#dff1ee; --orange:#e8742a; --orange-soft:#fdebdc;
+  --sun:#f6c445; --done:#2e9e5b; --shadow:0 6px 22px rgba(60,40,10,.10);
+  --r:22px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans Bengali",sans-serif;
+  -webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:disabled{cursor:default;opacity:.4}
+.hidden{display:none!important}
+
+header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var(--teal);color:#fff}
+header .logo{width:42px;height:42px;border-radius:12px;background:var(--sun);display:grid;place-items:center;font-size:24px;flex:none}
+header h1{font-size:19px;margin:0;line-height:1.15}
+header .sub{font-size:13px;opacity:.85}
+header .gear{margin-left:auto;font-size:22px;width:42px;height:42px;border-radius:12px;color:#fff}
+header .gear:hover{background:rgba(255,255,255,.12)}
+
+main{max-width:1100px;margin:0 auto;padding:18px 16px 40px}
+.layout{display:grid;gap:18px;grid-template-columns:1fr}
+@media(min-width:900px){.layout{grid-template-columns:minmax(380px,460px) 1fr;align-items:start}
+  .player{position:sticky;top:16px}}
+
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:20px}
+
+/* Start screen */
+.start{max-width:560px;margin:30px auto;text-align:center}
+.start .big-emoji{font-size:64px}
+.start h2{margin:8px 0 6px;font-size:26px}
+.start p{color:var(--muted);line-height:1.5;margin:6px 0 18px}
+.btn-main{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--teal);color:#fff;
+  font-size:20px;font-weight:700;padding:16px 28px;border-radius:999px;box-shadow:0 5px 0 #0a4d4a}
+.btn-main:active{transform:translateY(3px);box-shadow:0 2px 0 #0a4d4a}
+.link{color:var(--teal);text-decoration:underline;font-size:15px;margin-top:14px;display:inline-block}
+.msg-err{background:#fff1f0;color:#9b2c1f;border-radius:14px;padding:12px 14px;margin-top:16px;text-align:left;line-height:1.5;font-size:15px}
+
+/* Player card */
+.again-strip{background:var(--orange-soft);color:#8a3d0c;border-radius:14px;padding:10px 12px;font-weight:600;font-size:15px;margin-bottom:14px}
+.where{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{background:var(--teal-soft);color:var(--teal);font-weight:700;border-radius:999px;padding:6px 12px;font-size:15px}
+.chip.day{background:var(--sun);color:#5a3f00}
+.now-icon{font-size:50px;margin:16px 0 6px;line-height:1;width:88px;height:88px;border-radius:50%;background:#ffe3b8;display:grid;place-items:center}
+.listen{font-size:17px;color:var(--teal);font-weight:700;margin:6px 0 2px}
+.title{font-size:28px;font-weight:800;margin:2px 0 6px;line-height:1.2;word-break:break-word}
+.status{color:var(--muted);font-size:16px;min-height:22px}
+.progress{margin:16px 0 4px}
+.progress input{width:100%;accent-color:var(--teal);height:28px}
+.times{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums}
+
+.controls{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;margin-top:10px}
+.nav{font-size:16px;font-weight:700;color:var(--teal);padding:12px 8px;border-radius:14px}
+.nav:hover:not(:disabled){background:var(--teal-soft)}
+.nav.prev{justify-self:start}.nav.next{justify-self:end}
+.play{width:104px;height:104px;border-radius:50%;background:var(--teal);color:#fff;font-size:42px;
+  box-shadow:0 7px 0 #0a4d4a;display:grid;place-items:center}
+.play:active{transform:translateY(4px);box-shadow:0 3px 0 #0a4d4a}
+.play-label{text-align:center;font-weight:800;color:var(--teal);margin-top:10px;font-size:18px}
+.repeat-row{display:flex;justify-content:center;margin-top:14px}
+.repeat{display:inline-flex;align-items:center;gap:10px;border-radius:999px;padding:10px 20px;font-weight:800;font-size:17px;
+  background:#f1ece2;color:#6a5a45;border:2px solid #e2d8c6}
+.repeat .sw{width:44px;height:24px;border-radius:99px;background:#cfc4b1;position:relative;flex:none;transition:background .2s}
+.repeat .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .2s}
+.repeat.on{background:var(--orange);color:#fff;border-color:#c95f1d}
+.repeat.on .sw{background:#ffd2b0}.repeat.on .sw::after{left:23px}
+.repeat-note{text-align:center;color:#8a3d0c;font-weight:600;font-size:14px;margin-top:6px;min-height:18px}
+
+.again{display:flex;align-items:center;gap:12px;width:100%;margin-top:18px;background:var(--orange-soft);
+  border:2px solid #f6c7a3;border-radius:18px;padding:12px 14px;text-align:left}
+.again .ic{width:52px;height:52px;border-radius:50%;background:var(--orange);color:#fff;display:grid;place-items:center;font-size:26px;flex:none}
+.again b{display:block;font-size:18px;color:#8a3d0c}
+.again span{font-size:14px;color:#8a5a37}
+.again:not(:disabled):hover{border-color:var(--orange)}
+
+.banner{margin-top:16px;border-radius:18px;padding:14px 16px;background:#e7f6ec;border:2px solid #b7e2c6;color:#1d5e36;line-height:1.45}
+.banner .h{font-size:19px;font-weight:800;display:block;margin-bottom:4px}
+
+/* Lesson list */
+.list h2{margin:0 0 4px;font-size:20px}
+.list .hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+.stories{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:thin}
+.story-tab{flex:none;min-width:86px;border-radius:16px;padding:10px 12px;background:#f4ede0;font-weight:700;text-align:center;line-height:1.2}
+.story-tab small{display:block;font-weight:600;font-size:12px;color:var(--muted);margin-top:2px}
+.story-tab.on{background:var(--teal);color:#fff}
+.story-tab.on small{color:#cfe9e6}
+.story-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 0 4px}
+.story-head h3{margin:0;font-size:18px}
+.story-head span{color:var(--muted);font-size:14px;white-space:nowrap}
+.bar{height:8px;background:#efe6d6;border-radius:9px;overflow:hidden;margin-bottom:8px}
+.bar i{display:block;height:100%;background:var(--done);border-radius:9px}
+.day{margin-top:14px}
+.day-h{font-weight:800;color:#6b4e00;background:#fdf2cf;display:inline-block;border-radius:10px;padding:4px 10px;font-size:14px}
+.item{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:10px 10px;border-radius:14px;margin-top:4px}
+.item:hover{background:#f7f1e6}
+.item .em{font-size:22px;width:42px;height:42px;border-radius:50%;background:#ffe3b8;display:grid;place-items:center;flex:none}
+.item.cur .em{background:#fff}
+.item .t{flex:1;min-width:0}
+.item .t b{display:block;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item .t small{color:var(--muted);font-size:13px}
+.item .mark{font-size:18px;flex:none;width:26px;text-align:center}
+.item.cur{background:var(--teal-soft);outline:2px solid var(--teal)}
+.item.done .t b{color:#2b5b3c}
+
+/* Settings */
+.sheet-bg{position:fixed;inset:0;background:rgba(20,20,20,.35);display:grid;place-items:center;padding:16px;z-index:5}
+.sheet{background:#fff;border-radius:22px;max-width:420px;width:100%;padding:20px}
+.sheet h3{margin:0 0 12px}
+.sheet button.row{display:block;width:100%;text-align:left;padding:14px;border-radius:14px;background:#f6f1e7;margin-top:8px;font-weight:600}
+.sheet .close{margin-top:14px;color:var(--teal);font-weight:700}
+.sheet p{color:var(--muted);font-size:14px;line-height:1.5}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo" aria-hidden="true">🎧</div>
+  <div>
+    <h1>LUPCE English Journey</h1>
+    <div class="sub" id="partLabel">Listen &amp; Practise</div>
+  </div>
+  <button class="gear" id="gearBtn" title="Settings" aria-label="Settings">⚙</button>
+</header>
+
+<main>
+  <!-- START -->
+  <section class="start card" id="startView">
+    <div class="big-emoji">📚</div>
+    <h2 id="startTitle">Welcome!</h2>
+    <p id="startText">Choose your <b>LUPCE</b> audio folder to start listening.</p>
+    <button class="btn-main" id="openBtn">📂 Choose My Audio Folder</button><br>
+    <button class="link hidden" id="otherFolderBtn">Choose a different folder</button>
+    <input type="file" id="dirInput" webkitdirectory directory multiple class="hidden">
+    <input type="file" id="filesInput" accept="audio/*,.mp3,.m4a" multiple class="hidden">
+    <div class="msg-err hidden" id="startErr"></div>
+  </section>
+
+  <!-- PLAYER -->
+  <div class="layout hidden" id="appView">
+    <section class="player card" aria-live="polite">
+      <div class="again-strip hidden" id="againStrip"></div>
+      <div class="where">
+        <span class="chip" id="storyChip">Story 01</span>
+        <span class="chip day" id="dayChip">Day 9</span>
+      </div>
+      <div class="now-icon" id="nowIcon">🎧</div>
+      <div class="listen" id="listenLabel">🎧 Listen 9 Point 1</div>
+      <div class="title" id="titleLabel">Arif Says Hi</div>
+      <div class="status" id="statusLabel">Ready. Press Play.</div>
+
+      <div class="progress">
+        <input type="range" id="seek" min="0" max="1000" value="0" aria-label="Position">
+        <div class="times"><span id="tCur">0:00</span><span id="tDur">0:00</span></div>
+      </div>
+
+      <div class="controls">
+        <button class="nav prev" id="prevBtn">◀ Back</button>
+        <button class="play" id="playBtn" aria-label="Play">▶</button>
+        <button class="nav next" id="nextBtn">Next ▶</button>
+      </div>
+      <div class="play-label" id="playLabel">Play</div>
+      <div class="repeat-row"><button class="repeat" id="repeatBtn" aria-pressed="false"><span>🔂 Repeat</span><span class="sw"></span><span id="repeatState">Off</span></button></div>
+      <div class="repeat-note" id="repeatNote"></div>
+
+      <button class="again" id="againBtn" disabled>
+        <div class="ic">🔁</div>
+        <div><b>Listen Again</b><span id="againSub">Nothing finished yet</span></div>
+      </button>
+
+      <div class="banner hidden" id="banner"></div>
+    </section>
+
+    <section class="list card">
+      <h2>My Lessons</h2>
+      <p class="hint">Tap a lesson to choose it. Then press Play.</p>
+      <div class="stories" id="storyTabs"></div>
+      <div id="storyBody"></div>
+    </section>
+  </div>
+</main>
+
+<!-- SETTINGS -->
+<div class="sheet-bg hidden" id="sheet">
+  <div class="sheet">
+    <h3>Settings</h3>
+    <button class="row" id="changeFolderBtn">📂 Choose another audio folder</button>
+    <button class="row" id="clearTicksBtn">🧹 Clear all ✅ ticks (start again)</button>
+    <p>Your place and ✅ ticks are saved on this device.</p>
+    <button class="close" id="closeSheet">Close</button>
+  </div>
+</div>
+
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const AUDIO_RE = /\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac)$/i;
+const ANY_SOUND_RE = /\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac|wma|amr|3gp|3ga|mpeg|mpga)$/i;
+const FILE_RE  = /^(?:L|Listen)\s*0*(\d{1,2})(?:\s*(?:[-._]|point)\s*0*(\d{1,2}))?(?:\s*[-–—]?\s+(.*?))?\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac)$/i;
+let scanInfo = { root:"", dirs:0, sounds:0, unmatched:[] };
+function newScan(root){ scanInfo = { root: root || "", dirs:0, sounds:0, unmatched:[] }; }
+function noteSound(name, matched){ if (!ANY_SOUND_RE.test(name)) return; scanInfo.sounds++; if (!matched && scanInfo.unmatched.length < 5) scanInfo.unmatched.push(name); }
+const STORY_RE = /^story\s*[-_ ]?\s*0*(\d{1,3})(?:\s*[-–—:_]\s*(.+))?$/i;
+const PART_RE  = /^part\s+[a-z]\b/i;
+const STORE_KEY = "lupce.player.v1";
+
+/* ---------- saved progress ---------- */
+let saved = { cur:null, last:null, done:{} };
+try { const s = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (s) saved = Object.assign(saved, s); } catch(e){}
+function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch(e){} }
+
+/* ---------- folder handle memory (Chrome / Edge) ---------- */
+const canPickDir = typeof window.showDirectoryPicker === "function";
+function idb(){ return new Promise((res,rej)=>{ const r = indexedDB.open("lupce-player",1);
+  r.onupgradeneeded = () => r.result.createObjectStore("h"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+async function putHandle(h){ try{ const db=await idb(); await new Promise((res,rej)=>{const t=db.transaction("h","readwrite");t.objectStore("h").put(h,"root");t.oncomplete=res;t.onerror=()=>rej(t.error);}); }catch(e){} }
+async function getHandle(){ try{ const db=await idb(); return await new Promise((res)=>{const t=db.transaction("h","readonly");const q=t.objectStore("h").get("root");q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null);}); }catch(e){ return null; } }
+
+/* ---------- state ---------- */
+let tracks = [];      // sorted list
+let cur = 0;          // selected (next to play)
+let last = null;      // index of just-finished track
+let mode = null;      // null | "normal" | "again"
+let loadedIdx = null; // which track is in the audio element
+let viewStory = null; // story number shown in list
+let audioUrl = null;
+/* ---------- Android app bridge (only inside the LUPCE Android app) ---------- */
+const NATIVE = window.LupceAndroid || null;
+class NativeAudio extends EventTarget {
+  constructor(){ super(); this._src = ""; this._t = 0; this._d = NaN; this.paused = true; this.ended = false; this._wait = null;
+    window.__lupceAudio = (ev, a, b) => this._ev(ev, a, b); }
+  get src(){ return this._src; }
+  set src(v){ this._src = v; this._t = 0; this._d = NaN; this.ended = false; this.paused = true; NATIVE.load(v); }
+  removeAttribute(){ if (this._src) NATIVE.stop(); this._src = ""; this.paused = true; }
+  load(){}
+  get currentTime(){ return this._t; }
+  set currentTime(v){ this._t = v; this.ended = false; NATIVE.seek(Math.round(v * 1000)); }
+  get duration(){ return this._d; }
+  play(){
+    if (!this._src) return Promise.reject(new Error("no audio"));
+    this.ended = false;
+    return new Promise((res, rej) => { this._wait = { res, rej }; NATIVE.play(); });
+  }
+  pause(){ if (this._src) NATIVE.pause(); }
+  _ev(ev, a, b){
+    const fire = n => this.dispatchEvent(new Event(n));
+    if (ev === "time"){ this._t = a / 1000; if (b > 0) this._d = b / 1000; fire("timeupdate"); }
+    else if (ev === "meta"){ this._d = a / 1000; fire("loadedmetadata"); }
+    else if (ev === "play"){ this.paused = false; if (this._wait){ this._wait.res(); this._wait = null; } fire("play"); }
+    else if (ev === "pause"){ this.paused = true; fire("pause"); }
+    else if (ev === "ended"){ this.paused = true; this.ended = true; if (this._d) this._t = this._d; fire("ended"); }
+    else if (ev === "error"){ this.paused = true; if (this._wait){ this._wait.rej(new Error("play")); this._wait = null; } fire("pause"); }
+  }
+}
+const audio = NATIVE ? new NativeAudio() : new Audio();
+audio.preload = "auto";
+
+/* ---------- helpers ---------- */
+const pad = n => String(n).padStart(2,"0");
+function iconFor(t){
+  const s = (t.title + " " + t.section).toLowerCase();
+  const rules = [["presentation","🎙️"],["interview","🎤"],["rhyme","🎵"],["dua","🤲"],["says hi","👦"],["drama","🎭"],
+    ["dialogue","👫"],["conversation","👫"],["diary","📖"],["story","📖"],["q&a","🗣️"],["think","🤔"],["answer","🗣️"],
+    ["feeling","😊"],["order","🔢"],["thought","💡"],["situation","⚡"],["mistake","🕵️"],["detective","🕵️"],
+    ["who","🎮"],["choice","🎮"],["yes or no","👍"],["game","🎮"],["say","🗣️"],["lesson","👂"],["door","🚪"]];
+  for (const [k,e] of rules) if (s.includes(k)) return e;
+  return "🎧";
+}
+function dayText(L){ return L===1 ? "Day 1–2" : L===2 ? "Day 3–5" : "Day " + L; }
+function listenText(t){ return "🎧 Listen " + t.L + (t.P ? " Point " + t.P : ""); }
+function storyText(n){ return "Story " + pad(n); }
+function fmt(s){ if(!isFinite(s)||s<0) s=0; s=Math.floor(s); return Math.floor(s/60)+":"+pad(s%60); }
+
+/* ---------- reading the folder ---------- */
+function makeTrack(path, getFile){
+  const parts = path.split("/").filter(Boolean);
+  const name = parts.pop();
+  const m = name.match(FILE_RE); if (!m) return null;
+  let story = null, storyTitle = "", part = "";
+  for (const seg of parts){
+    const sm = seg.trim().match(STORY_RE);
+    if (sm){ story = parseInt(sm[1],10); storyTitle = (sm[2]||"").trim(); }
+    if (PART_RE.test(seg.trim())) part = seg.trim();
+  }
+  if (story === null) story = 0;
+  const L = parseInt(m[1],10), P = m[2] ? parseInt(m[2],10) : 0;
+  const section = L===1 ? "Rhyme" : L===2 ? "Story" : "";
+  const title = ((m[3]||"").trim().replace(/\s+-\s+/g, ": ")) || section || ("Listen " + L);
+  return { story, storyTitle, part, L, P, title, section, path, getFile,
+           key: "S"+pad(story)+"-L"+pad(L)+(P?"-"+P:"") };
+}
+async function walkHandle(dir, prefix, out, depth){
+  if (depth > 5) return;
+  for await (const [name, h] of dir.entries()){
+    if (h.kind === "directory"){ scanInfo.dirs++; await walkHandle(h, prefix + name + "/", out, depth+1); }
+    else { const t = AUDIO_RE.test(name) ? makeTrack(prefix + name, () => h.getFile()) : null; noteSound(name, !!t); if (t) out.push(t); }
+  }
+}
+function fromFileList(list){
+  const out = [];
+  const first = list[0] && list[0].webkitRelativePath ? list[0].webkitRelativePath.split("/")[0] : "";
+  newScan(first);
+  for (const f of list){
+    const p = f.webkitRelativePath || f.name;
+    const t = AUDIO_RE.test(f.name) ? makeTrack(p, () => Promise.resolve(f)) : null;
+    noteSound(f.name, !!t); if (t) out.push(t);
+  }
+  return out;
+}
+function useTracks(list){
+  // remove duplicates (same key) — keep first
+  const seen = new Set(); list = list.filter(t => !seen.has(t.key) && seen.add(t.key));
+  list.sort((a,b)=> a.story-b.story || a.L-b.L || a.P-b.P);
+  if (!list.length){ noLessons(); return; }
+  tracks = list;
+  const parts = [...new Set(list.map(t=>t.part).filter(Boolean))];
+  $("partLabel").textContent = parts.length === 1 ? parts[0] : "Listen & Practise";
+  const ci = tracks.findIndex(t=>t.key===saved.cur);
+  cur = ci >= 0 ? ci : 0;
+  const li = tracks.findIndex(t=>t.key===saved.last);
+  last = li >= 0 ? li : null;
+  viewStory = tracks[cur].story;
+  $("startView").classList.add("hidden");
+  $("appView").classList.remove("hidden");
+  renderAll();
+}
+
+/* ---------- start screen ---------- */
+const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function noLessons(){
+  // forget the wrong folder so the next press lets the user choose again
+  if (!NATIVE){ idb().then(db => { try { db.transaction("h","readwrite").objectStore("h").delete("root"); } catch(_){} }).catch(()=>{}); }
+  $("startTitle").textContent = "Let's find your lessons 📂";
+  $("startText").innerHTML = "Press the button and choose the <b>LUPCE</b> folder.";
+  $("openBtn").innerHTML = "📂 Choose My Audio Folder";
+  $("openBtn").onclick = pickFolder;
+  $("otherFolderBtn").classList.add("hidden");
+  const i = scanInfo;
+  let html = "<b>No lesson audio was found in the folder" + (i.root ? " “" + esc(i.root) + "”" : "") + ".</b><br>";
+  if (i.sounds === 0){
+    html += "This folder has no audio files" + (i.dirs ? " (it has " + i.dirs + " folder" + (i.dirs>1?"s":"") + " inside)." : ".") +
+            " Maybe a different folder was chosen. Please choose the <b>LUPCE</b> folder that has <b>Story 01</b>, <b>Story 02</b> … inside it.";
+  } else {
+    html += "It has " + i.sounds + " audio file" + (i.sounds>1?"s":"") + ", but their names do not start with a lesson number. For example:<br>" +
+            i.unmatched.map(n => "• " + esc(n)).join("<br>") +
+            "<br>Please name them like <b>L01 Rhyme.mp3</b> or <b>L09-1 Arif Says Hi.mp3</b>, inside folders named <b>Story 01</b>, <b>Story 02</b> …" +
+            (i.unmatched.some(n => /\.(wma|amr|3gp|3ga)$/i.test(n)) ? "<br>Some files are in a format the player cannot play. Please save them as <b>MP3</b>." : "");
+  }
+  showStartError(html);
+}
+function showStartError(html){ const e=$("startErr"); e.innerHTML = html; e.classList.remove("hidden");
+  $("startView").classList.remove("hidden"); $("appView").classList.add("hidden"); }
+function showBusy(){
+  $("startView").classList.remove("hidden"); $("appView").classList.add("hidden");
+  $("startTitle").textContent = "Opening your lessons… ⏳";
+  $("startText").innerHTML = "Please wait a moment.";
+}
+window.__lupceNativeFiles = (list, root) => {
+  const out = [];
+  newScan(root || (list[0] ? list[0].p.split("/")[0] : ""));
+  for (const o of list){ const nm = o.p.split("/").pop(); const t = AUDIO_RE.test(o.p) ? makeTrack(o.p, null) : null; noteSound(nm, !!t); if (t){ t.uri = o.u; out.push(t); } }
+  useTracks(out);
+};
+window.__lupceNativeError = msg => { showStartError(msg || "The folder could not be opened. Please choose it again."); $("openBtn").innerHTML = "📂 Choose My Audio Folder"; $("openBtn").onclick = pickFolder; };
+window.__lupceNativeBusy = showBusy;
+async function pickFolder(){
+  $("startErr").classList.add("hidden");
+  if (NATIVE){ NATIVE.pickFolder(); return; }
+  if (canPickDir){
+    let h;
+    try { h = await window.showDirectoryPicker({ id:"lupce", mode:"read" }); }
+    catch(e){ if (e && e.name === "AbortError") return; $("dirInput").click(); return; }
+    await putHandle(h);
+    const out=[]; newScan(h.name); try { await walkHandle(h, h.name + "/", out, 0); } catch(e){ showStartError("Could not read this folder. Please try again."); return; }
+    useTracks(out);
+  } else {
+    $("dirInput").click();
+  }
+}
+async function reopenSaved(h){
+  try {
+    let p = await h.queryPermission({mode:"read"});
+    if (p !== "granted") p = await h.requestPermission({mode:"read"});
+    if (p !== "granted") { showStartError("Please press <b>Allow</b> so the player can open your audio folder."); return; }
+    const out=[]; newScan(h.name); await walkHandle(h, h.name + "/", out, 0); useTracks(out);
+  } catch(e){
+    try { const db = await idb(); db.transaction("h","readwrite").objectStore("h").delete("root"); } catch(_){}
+    $("startTitle").textContent = "Let's find your lessons 📂";
+    $("startText").innerHTML = "Press the button and choose the <b>LUPCE</b> folder again.";
+    $("openBtn").innerHTML = "📂 Choose My Audio Folder";
+    $("openBtn").onclick = pickFolder;
+    $("otherFolderBtn").classList.add("hidden");
+    showStartError("The folder was not found in its old place. It may have been moved or renamed, or the memory card / USB is not connected. Your ✅ ticks are safe.");
+  }
+}
+$("dirInput").addEventListener("change", e => { const l = e.target.files; if (l && l.length) useTracks(fromFileList(l)); e.target.value=""; });
+$("filesInput").addEventListener("change", e => { const l = e.target.files; if (l && l.length) useTracks(fromFileList(l)); e.target.value=""; });
+$("otherFolderBtn").onclick = pickFolder;
+
+(async function init(){
+  if (NATIVE){
+    $("startText").innerHTML = "Choose your <b>LUPCE</b> folder on the memory card to start listening.";
+    if (NATIVE.hasSavedFolder()){
+      $("startTitle").textContent = "Welcome back! 👋";
+      $("startText").innerHTML = "Press the button to open your lessons.";
+      $("openBtn").innerHTML = "▶ Open My Lessons";
+      $("openBtn").onclick = () => { $("startErr").classList.add("hidden"); NATIVE.openSaved(); };
+      $("otherFolderBtn").classList.remove("hidden");
+    } else { $("openBtn").onclick = pickFolder; }
+    return;
+  }
+  const h = canPickDir ? await getHandle() : null;
+  if (h){
+    $("startTitle").textContent = "Welcome back! 👋";
+    $("startText").innerHTML = "Press the button to open your lessons.";
+    $("openBtn").innerHTML = "▶ Open My Lessons";
+    $("openBtn").onclick = () => reopenSaved(h);
+    $("otherFolderBtn").classList.remove("hidden");
+  } else {
+    $("openBtn").onclick = pickFolder;
+  }
+})();
+
+/* ---------- playback ---------- */
+async function loadTrack(i){
+  if (loadedIdx === i && audio.src) return;
+  if (NATIVE){ audio.src = tracks[i].uri; loadedIdx = i; return; }
+  const f = await tracks[i].getFile();
+  if (audioUrl) URL.revokeObjectURL(audioUrl);
+  audioUrl = URL.createObjectURL(f);
+  audio.src = audioUrl; loadedIdx = i;
+}
+function stopAudio(){ audio.pause(); mode = null; }
+async function playCurrent(){
+  hideBanner();
+  try {
+    if (mode !== "normal" || loadedIdx !== cur){ await loadTrack(cur); audio.currentTime = 0; }
+    mode = "normal"; await audio.play();
+  } catch(e){ setStatus("⚠️ This audio could not be played."); mode = null; }
+  renderPlayer();
+}
+async function playAgain(){
+  if (last === null) return;
+  hideBanner(); audio.pause();
+  try { await loadTrack(last); audio.currentTime = 0; mode = "again"; await audio.play(); }
+  catch(e){ setStatus("⚠️ This audio could not be played."); mode = null; }
+  renderPlayer();
+}
+function onPlayBtn(){
+  if (!audio.paused){ audio.pause(); renderPlayer(); return; }
+  if (mode && loadedIdx !== null && audio.currentTime > 0 && !audio.ended){ audio.play().catch(()=>{}); renderPlayer(); return; }
+  playCurrent();
+}
+let repeatOn = false, heard = 0;
+function renderRepeat(){
+  $("repeatBtn").classList.toggle("on", repeatOn);
+  $("repeatBtn").setAttribute("aria-pressed", repeatOn ? "true" : "false");
+  $("repeatState").textContent = repeatOn ? "On" : "Off";
+  $("repeatNote").textContent = repeatOn ? (heard > 0 ? "Heard " + heard + (heard === 1 ? " time" : " times") + " — it will play again and again." : "The lesson will play again and again.") : "";
+}
+$("repeatBtn").onclick = () => { repeatOn = !repeatOn; heard = 0; renderRepeat(); };
+audio.addEventListener("ended", () => {
+  if (repeatOn && mode){
+    if (mode === "normal"){ saved.done[tracks[cur].key] = 1; last = cur; saved.last = tracks[last].key; save(); }
+    heard++; renderRepeat();
+    audio.currentTime = 0; audio.play().catch(()=>{});
+    renderList(); renderPlayer(); return;
+  }
+  heard = 0; renderRepeat();
+  if (mode === "again"){ mode = null; audio.currentTime = 0; renderPlayer(); setStatus("Ready. Press Play."); return; }
+  if (mode !== "normal") return;
+  mode = null;
+  const fin = cur;
+  saved.done[tracks[fin].key] = 1;
+  last = fin;
+  if (fin < tracks.length - 1){ cur = fin + 1; }
+  saved.cur = tracks[cur].key; saved.last = tracks[last].key; save();
+  // keep list on the story of the newly selected lesson
+  viewStory = tracks[cur].story;
+  loadedIdx = null; // next Play loads the newly selected lesson
+  showFinishBanner(fin);
+  renderAll();
+});
+audio.addEventListener("timeupdate", updateTime);
+audio.addEventListener("loadedmetadata", updateTime);
+audio.addEventListener("play", renderPlayer);
+audio.addEventListener("pause", renderPlayer);
+
+function select(i){
+  if (i < 0 || i >= tracks.length) return;
+  stopAudio(); hideBanner(); heard = 0; renderRepeat();
+  cur = i; loadedIdx = null; audio.removeAttribute("src"); audio.load();
+  saved.cur = tracks[cur].key; save();
+  viewStory = tracks[cur].story;
+  renderAll();
+}
+
+/* ---------- banners ---------- */
+function hideBanner(){ $("banner").classList.add("hidden"); }
+function showFinishBanner(fin){
+  const a = tracks[fin], b = tracks[cur], isLast = fin === tracks.length - 1;
+  let head, text;
+  if (isLast){ head = "🏆 Wonderful! You finished every lesson!"; text = "MashaAllah! Press 🔁 Listen Again to hear the last one again."; }
+  else if (a.story !== b.story){ head = "🌟 " + storyText(a.story) + " is complete! Well done!"; text = "Next: <b>" + storyText(b.story) + " · " + listenText(b) + "</b>. Press Play when you are ready."; }
+  else if (a.L !== b.L){
+    const what = a.L===1 ? "The Rhyme" : a.L===2 ? "The Story" : "Day " + a.L;
+    head = "🎉 Well done! " + what + " is complete."; text = "Next: <b>" + dayText(b.L) + " · " + listenText(b) + "</b>. Press Play when you are ready."; }
+  else { $("banner").classList.add("hidden"); return; }
+  $("banner").innerHTML = '<span class="h">' + head + "</span>" + text;
+  $("banner").classList.remove("hidden");
+}
+
+/* ---------- render ---------- */
+function setStatus(t){ $("statusLabel").textContent = t; }
+function updateTime(){
+  const d = audio.duration, c = audio.currentTime;
+  $("tCur").textContent = fmt(c); $("tDur").textContent = fmt(d);
+  if (!seeking) $("seek").value = d ? Math.round(c/d*1000) : 0;
+}
+let seeking = false;
+$("seek").addEventListener("input", () => { seeking = true; const d = audio.duration; if (d) $("tCur").textContent = fmt($("seek").value/1000*d); });
+$("seek").addEventListener("change", () => { const d = audio.duration; if (d && mode) audio.currentTime = $("seek").value/1000*d; seeking = false; });
+
+function renderPlayer(){
+  if (!tracks.length) return;
+  const t = tracks[cur];
+  $("storyChip").textContent = storyText(t.story);
+  $("dayChip").textContent = dayText(t.L);
+  $("nowIcon").textContent = iconFor(t);
+  $("listenLabel").textContent = listenText(t);
+  $("titleLabel").textContent = t.title;
+  const playing = !audio.paused;
+  $("playBtn").textContent = playing ? "⏸" : "▶";
+  $("playBtn").setAttribute("aria-label", playing ? "Pause" : "Play");
+  $("playLabel").textContent = playing ? "Pause" : (mode && audio.currentTime > 0 && !audio.ended ? "Continue" : "Play");
+  if (mode === "again"){
+    const a = tracks[last];
+    $("againStrip").textContent = "🔁 Listening again: " + listenText(a) + " — " + a.title;
+    $("againStrip").classList.remove("hidden");
+    setStatus(playing ? "Listening again…" : "⏸ Paused");
+  } else {
+    $("againStrip").classList.add("hidden");
+    if (mode === "normal") setStatus(playing ? (repeatOn ? "🔂 Playing… it will repeat. Press Pause to stop." : "▶ Playing… listen carefully.") : "⏸ Paused");
+    else setStatus("Ready. Press Play.");
+  }
+  if (!mode){ $("seek").value = 0; $("tCur").textContent = "0:00"; $("tDur").textContent = "0:00"; }
+  $("prevBtn").disabled = cur === 0;
+  $("nextBtn").disabled = cur === tracks.length - 1;
+  if (last !== null){
+    const a = tracks[last];
+    $("againBtn").disabled = false;
+    $("againSub").textContent = storyText(a.story) + " · " + listenText(a).replace("🎧 ","") + " — " + a.title;
+  } else { $("againBtn").disabled = true; $("againSub").textContent = "Nothing finished yet"; }
+}
+
+function renderList(){
+  const stories = [...new Set(tracks.map(t=>t.story))];
+  const tabs = $("storyTabs"); tabs.innerHTML = "";
+  for (const s of stories){
+    const st = tracks.filter(t=>t.story===s);
+    const done = st.filter(t=>saved.done[t.key]).length;
+    const b = document.createElement("button");
+    b.className = "story-tab" + (s===viewStory ? " on" : "");
+    b.innerHTML = (s ? storyText(s) : "Lessons") + "<small>" + (done===st.length ? "✅ Done" : done + " / " + st.length) + "</small>";
+    b.onclick = () => { viewStory = s; renderList(); };
+    tabs.appendChild(b);
+  }
+  const body = $("storyBody"); body.innerHTML = "";
+  const st = tracks.filter(t=>t.story===viewStory);
+  const done = st.filter(t=>saved.done[t.key]).length;
+  const title = st[0] && st[0].storyTitle ? " — " + st[0].storyTitle : "";
+  const head = document.createElement("div"); head.className = "story-head";
+  head.innerHTML = "<h3></h3><span>" + done + " of " + st.length + " done</span>";
+  head.querySelector("h3").textContent = (viewStory ? storyText(viewStory) : "Lessons") + title;
+  body.appendChild(head);
+  const bar = document.createElement("div"); bar.className="bar"; bar.innerHTML = '<i style="width:'+(st.length?Math.round(done/st.length*100):0)+'%"></i>';
+  body.appendChild(bar);
+  let lastL = null, group = null;
+  for (const t of st){
+    if (t.L !== lastL){
+      lastL = t.L; group = document.createElement("div"); group.className="day";
+      group.innerHTML = '<span class="day-h">' + dayText(t.L) + (t.section ? " · " + t.section : "") + "</span>";
+      body.appendChild(group);
+    }
+    const i = tracks.indexOf(t);
+    const it = document.createElement("button");
+    const isDone = !!saved.done[t.key];
+    it.className = "item" + (i===cur ? " cur" : "") + (isDone ? " done" : "");
+    it.innerHTML = '<span class="em"></span><span class="t"><b></b><small></small></span><span class="mark"></span>';
+    it.querySelector(".em").textContent = iconFor(t);
+    it.querySelector("b").textContent = t.title;
+    it.querySelector("small").textContent = listenText(t).replace("🎧 ","");
+    it.querySelector(".mark").textContent = i===cur ? "👉" : isDone ? "✅" : "";
+    it.onclick = () => select(i);
+    group.appendChild(it);
+    if (i===cur) requestAnimationFrame(()=>{ if (it.scrollIntoView && window.innerWidth >= 900) it.scrollIntoView({block:"nearest"}); });
+  }
+}
+function renderAll(){ renderPlayer(); renderList(); }
+
+/* ---------- buttons ---------- */
+$("playBtn").onclick = onPlayBtn;
+$("againBtn").onclick = playAgain;
+$("prevBtn").onclick = () => select(cur - 1);
+$("nextBtn").onclick = () => select(cur + 1);
+document.addEventListener("keydown", e => {
+  if (!tracks.length || e.target.tagName === "INPUT") return;
+  if (e.code === "Space"){ e.preventDefault(); onPlayBtn(); }
+});
+$("gearBtn").onclick = () => $("sheet").classList.remove("hidden");
+$("closeSheet").onclick = () => $("sheet").classList.add("hidden");
+$("sheet").addEventListener("click", e => { if (e.target.id === "sheet") $("sheet").classList.add("hidden"); });
+$("changeFolderBtn").onclick = () => { $("sheet").classList.add("hidden"); stopAudio(); pickFolder(); };
+$("clearTicksBtn").onclick = () => {
+  if (!confirm("Clear all ✅ ticks and start again from the first lesson?")) return;
+  saved = { cur:null, last:null, done:{} }; save(); last = null; $("sheet").classList.add("hidden");
+  if (tracks.length) select(0);
+};
+
+/* test hook (used only for automatic testing) */
+window.__lupceLoad = list => useTracks(fromFileList(list));
+})();
+</script>
+</body>
+</html>
