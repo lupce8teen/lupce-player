@@ -502,7 +502,14 @@ audio.addEventListener("ended", () => {
   if (repeatOn && mode){
     if (mode === "normal"){ saved.done[tracks[cur].key] = 1; last = cur; saved.last = tracks[last].key; save(); }
     heard++; renderRepeat();
-    audio.currentTime = 0; audio.play().catch(()=>{});
+    if (NATIVE){
+      // On Android, start the same lesson fresh (most reliable way to replay it)
+      const idx = loadedIdx;
+      loadedIdx = null;
+      loadTrack(idx).then(() => { audio.currentTime = 0; return audio.play(); }).catch(() => {});
+    } else {
+      audio.currentTime = 0; audio.play().catch(()=>{});
+    }
     renderList(); renderPlayer(); return;
   }
   heard = 0; renderRepeat();
