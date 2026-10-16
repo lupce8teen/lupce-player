@@ -28,7 +28,25 @@ header .gear{margin-left:auto;font-size:22px;width:42px;height:42px;border-radiu
 header .gear:hover{background:rgba(255,255,255,.12)}
 
 main{max-width:1100px;margin:0 auto;padding:18px 16px 40px}
-.layout{display:grid;gap:18px;grid-template-columns:1fr}
+.layout{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
+.layout > *{min-width:0}
+body{overflow-x:clip}
+/* Mini player bar (phones / narrow windows): always reachable while scrolling the list */
+.mini{position:fixed;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:center;gap:8px;
+  background:#fff;border-top:3px solid var(--teal);box-shadow:0 -6px 20px rgba(60,40,10,.14);
+  padding:10px max(12px,calc(50% - 360px)) calc(10px + env(safe-area-inset-bottom));
+  transform:translateY(120%);transition:transform .2s ease;visibility:hidden}
+.mini.show{transform:none;visibility:visible}
+body.app-open main{padding-bottom:120px}
+.mini-info{flex:1;min-width:0;display:flex;align-items:center;gap:10px}
+.mini-ic{width:40px;height:40px;border-radius:50%;background:#ffe3b8;display:grid;place-items:center;font-size:21px;flex:none}
+.mini-txt{min-width:0}
+.mini-txt b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-txt small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini button{flex:none;display:grid;place-items:center}
+.mini .mb{width:40px;height:40px;border-radius:50%;background:var(--teal-soft);color:var(--teal);font-size:16px;font-weight:800}
+.mini .ma{background:var(--orange);color:#fff;font-size:19px}
+.mini .mp{width:58px;height:58px;border-radius:50%;background:var(--teal);color:#fff;font-size:26px;box-shadow:0 4px 0 #0a4d4a}
 @media(min-width:900px){.layout{grid-template-columns:minmax(380px,460px) 1fr;align-items:start}
   .player{position:sticky;top:16px}}
 
@@ -187,6 +205,18 @@ main{max-width:1100px;margin:0 auto;padding:18px 16px 40px}
   </div>
 </main>
 
+<!-- MINI PLAYER (shown on phones while the big Play button is scrolled away) -->
+<div class="mini" id="mini" aria-label="Player">
+  <div class="mini-info">
+    <div class="mini-ic" id="miniIcon">🎧</div>
+    <div class="mini-txt"><b id="miniTitle">—</b><small id="miniSub">Ready. Press Play.</small></div>
+  </div>
+  <button class="mb ma" id="miniAgain" aria-label="Listen Again" title="Listen Again">🔁</button>
+  <button class="mb" id="miniPrev" aria-label="Back" title="Back">◀</button>
+  <button class="mp" id="miniPlay" aria-label="Play">▶</button>
+  <button class="mb" id="miniNext" aria-label="Next" title="Next">▶▶</button>
+</div>
+
 <!-- SETTINGS -->
 <div class="sheet-bg hidden" id="sheet">
   <div class="sheet">
@@ -329,6 +359,7 @@ function useTracks(list){
   last = li >= 0 ? li : null;
   viewStory = tracks[cur].story;
   $("startView").classList.add("hidden");
+  document.body.classList.add("app-open");
   $("appView").classList.remove("hidden");
   renderAll();
 }
@@ -376,7 +407,7 @@ async function pickFolder(){
   if (NATIVE){ NATIVE.pickFolder(); return; }
   if (canPickDir){
     let h;
-    try { h = await window.showDirectoryPicker({ id:"lupce", mode:"read" }); }
+    try { h = await window.showDirectoryPicker({ mode:"read", startIn:"desktop" }); }
     catch(e){ if (e && e.name === "AbortError") return; $("dirInput").click(); return; }
     await putHandle(h);
     const out=[]; newScan(h.name); try { await walkHandle(h, h.name + "/", out, 0); } catch(e){ showStartError("Could not read this folder. Please try again."); return; }
@@ -559,6 +590,16 @@ function renderPlayer(){
     $("againBtn").disabled = false;
     $("againSub").textContent = storyText(a.story) + " · " + listenText(a).replace("🎧 ","") + " — " + a.title;
   } else { $("againBtn").disabled = true; $("againSub").textContent = "Nothing finished yet"; }
+  // mini player
+  $("miniIcon").textContent = iconFor(t);
+  $("miniTitle").textContent = t.title;
+  $("miniSub").textContent = mode === "again" ? (playing ? "🔁 Listening again…" : "⏸ Paused")
+    : (mode === "normal" ? (playing ? "▶ Playing · " : "⏸ Paused · ") : "") + listenText(t).replace("🎧 Listen ","L ").replace(" Point ","-");
+  $("miniPlay").textContent = playing ? "⏸" : "▶";
+  $("miniPlay").setAttribute("aria-label", playing ? "Pause" : "Play");
+  $("miniPrev").disabled = cur === 0;
+  $("miniNext").disabled = cur === tracks.length - 1;
+  $("miniAgain").disabled = last === null;
 }
 
 function renderList(){
@@ -609,6 +650,18 @@ function renderAll(){ renderPlayer(); renderList(); }
 /* ---------- buttons ---------- */
 $("playBtn").onclick = onPlayBtn;
 $("againBtn").onclick = playAgain;
+$("miniPlay").onclick = onPlayBtn;
+$("miniAgain").onclick = playAgain;
+$("miniPrev").onclick = () => select(cur - 1);
+$("miniNext").onclick = () => select(cur + 1);
+// show the mini player only while the big Play button is out of sight
+(function(){
+  const mini = $("mini");
+  if ("IntersectionObserver" in window){
+    new IntersectionObserver(es => { es.forEach(e => mini.classList.toggle("show", !e.isIntersecting && document.body.classList.contains("app-open"))); })
+      .observe($("playBtn"));
+  } else { mini.classList.add("show"); }
+})();
 $("prevBtn").onclick = () => select(cur - 1);
 $("nextBtn").onclick = () => select(cur + 1);
 document.addEventListener("keydown", e => {
