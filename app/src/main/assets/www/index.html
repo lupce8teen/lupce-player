@@ -9,7 +9,7 @@
 :root{
   --bg:#fbf6ec; --card:#ffffff; --ink:#1f2a2e; --muted:#5f6b6f; --line:#e8dfcf;
   --teal:#0f6e6a; --teal-soft:#dff1ee; --orange:#e8742a; --orange-soft:#fdebdc;
-  --sun:#f6c445; --done:#2e9e5b; --shadow:0 6px 22px rgba(60,40,10,.10);
+  --sun:#f6c445; --done:#2e9e5b; --red:#b3392b; --shadow:0 6px 22px rgba(60,40,10,.10);
   --r:22px;
 }
 *{box-sizing:border-box}
@@ -24,8 +24,9 @@ header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:var
 header .logo{width:42px;height:42px;border-radius:12px;background:var(--sun);display:grid;place-items:center;font-size:24px;flex:none}
 header h1{font-size:19px;margin:0;line-height:1.15}
 header .sub{font-size:13px;opacity:.85}
-header .gear{margin-left:auto;font-size:22px;width:42px;height:42px;border-radius:12px;color:#fff}
+header .gear{margin-left:auto;font-size:22px;width:42px;height:42px;border-radius:12px;color:#fff;flex:none}
 header .gear:hover{background:rgba(255,255,255,.12)}
+body.owner header{background:#4a3b8f}
 
 main{max-width:1100px;margin:0 auto;padding:18px 16px 40px}
 .layout{display:grid;gap:18px;grid-template-columns:minmax(0,1fr)}
@@ -60,8 +61,6 @@ body.app-open main{padding-bottom:120px}
 .btn-main{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--teal);color:#fff;
   font-size:20px;font-weight:700;padding:16px 28px;border-radius:999px;box-shadow:0 5px 0 #0a4d4a}
 .btn-main:active{transform:translateY(3px);box-shadow:0 2px 0 #0a4d4a}
-.link{color:var(--teal);text-decoration:underline;font-size:15px;margin-top:14px;display:inline-block}
-.msg-err{background:#fff1f0;color:#9b2c1f;border-radius:14px;padding:12px 14px;margin-top:16px;text-align:left;line-height:1.5;font-size:15px}
 
 /* Player card */
 .again-strip{background:var(--orange-soft);color:#8a3d0c;border-radius:14px;padding:10px 12px;font-weight:600;font-size:15px;margin-bottom:14px}
@@ -105,7 +104,7 @@ body.app-open main{padding-bottom:120px}
 
 /* Lesson list */
 .list h2{margin:0 0 4px;font-size:20px}
-.list .hint{color:var(--muted);font-size:14px;margin:0 0 12px}
+.list .hint, .hint{color:var(--muted);font-size:14px;margin:0 0 12px}
 .stories{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:thin}
 .story-tab{flex:none;min-width:86px;border-radius:16px;padding:10px 12px;background:#f4ede0;font-weight:700;text-align:center;line-height:1.2}
 .story-tab small{display:block;font-weight:600;font-size:12px;color:var(--muted);margin-top:2px}
@@ -113,7 +112,7 @@ body.app-open main{padding-bottom:120px}
 .story-tab.on small{color:#cfe9e6}
 .story-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:6px 0 4px}
 .story-head h3{margin:0;font-size:18px}
-.story-head span{color:var(--muted);font-size:14px;white-space:nowrap}
+.story-head > span{color:var(--muted);font-size:14px;white-space:nowrap}
 .bar{height:8px;background:#efe6d6;border-radius:9px;overflow:hidden;margin-bottom:8px}
 .bar i{display:block;height:100%;background:var(--done);border-radius:9px}
 .day{margin-top:14px}
@@ -129,36 +128,75 @@ body.app-open main{padding-bottom:120px}
 .item.cur{background:var(--teal-soft);outline:2px solid var(--teal)}
 .item.done .t b{color:#2b5b3c}
 
-/* Settings */
-.sheet-bg{position:fixed;inset:0;background:rgba(20,20,20,.35);display:grid;place-items:center;padding:16px;z-index:5}
-.sheet{background:#fff;border-radius:22px;max-width:420px;width:100%;padding:20px}
-.sheet h3{margin:0 0 12px}
-.sheet button.row{display:block;width:100%;text-align:left;padding:14px;border-radius:14px;background:#f6f1e7;margin-top:8px;font-weight:600}
-.sheet .close{margin-top:14px;color:var(--teal);font-weight:700}
-.sheet p{color:var(--muted);font-size:14px;line-height:1.5}
+/* Owner mode */
+.owner-top h2{margin:0;font-size:22px}
+.ow-head{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.btn-sec{background:#efeaf9;color:#4a3b8f;font-weight:800;border-radius:999px;padding:10px 16px;font-size:15px;flex:none}
+.ow-part{color:var(--muted);margin:6px 0 10px;line-height:1.45}
+.ow-stat{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.ow-stat span{background:#f4f1fb;color:#3d3170;border-radius:12px;padding:8px 12px;font-weight:700;font-size:15px}
+.ow-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px;margin-top:12px}
+.ow-grid button{display:flex;align-items:center;gap:10px;text-align:left;padding:13px 14px;border-radius:16px;background:#f6f1e7;font-weight:700;font-size:15px;line-height:1.25}
+.ow-grid button:hover{background:#efe6d5}
+.ow-grid button.danger{background:#fdeceb;color:var(--red)}
+.ow-note{color:var(--muted);font-size:13.5px;line-height:1.5;margin:12px 0 0}
+.ow-empty{background:#fff7e3;border:2px dashed #e7c76a;border-radius:18px;padding:16px;margin-top:6px;line-height:1.5}
+.orow{display:flex;align-items:center;gap:10px;padding:9px 8px;border-radius:14px;margin-top:4px}
+.orow:hover{background:#faf6ee}
+.orow .nm{display:flex;align-items:center;gap:6px;min-width:0}
+.orow .nm b{min-width:0}
+.ed{flex:none;font-size:14px;width:32px;height:30px;border-radius:9px;background:#f4f1fb;display:inline-grid;place-items:center}
+.ed:hover{background:#e6e0f7}
+.story-head h3 .ed{margin-left:6px;vertical-align:middle}
+.dlg input.txt[type=text]{font-size:18px;letter-spacing:0;text-align:left}
+.orow .dot{font-size:18px;width:26px;text-align:center;flex:none}
+.orow .t{flex:1;min-width:0}
+.orow .t b{display:block;font-size:15.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.orow .t small{display:block;color:var(--muted);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.orow.missing .t b{color:#7d7466}
+.orow .ob{flex:none;height:40px;min-width:40px;border-radius:12px;background:var(--teal-soft);color:var(--teal);font-weight:800;font-size:15px;padding:0 10px;display:grid;place-items:center}
+.orow .ob.add{background:#4a3b8f;color:#fff}
+.orow.has .ob.add{background:#efeaf9;color:#4a3b8f}
+.orow .ob.del{background:#fdeceb;color:var(--red)}
+.orow .ob .lbl{display:none}
+@media(min-width:640px){.orow .ob .lbl{display:inline;margin-left:6px}}
+
+/* Dialogs */
+.dlg-bg{position:fixed;inset:0;background:rgba(20,20,20,.42);display:grid;place-items:center;padding:16px;z-index:20}
+.dlg{background:#fff;border-radius:22px;max-width:460px;width:100%;padding:20px;max-height:calc(100vh - 32px);overflow:auto;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.dlg h3{margin:0 0 10px;font-size:20px}
+.dlg .body{color:#3b4548;line-height:1.55;font-size:15.5px}
+.dlg .body p{margin:0 0 10px}
+.dlg input[type=password],.dlg input[type=text],.dlg input[type=number]{width:100%;font-size:26px;letter-spacing:6px;text-align:center;padding:12px;border-radius:14px;border:2px solid var(--line);margin:6px 0 4px;outline:none}
+.dlg input:focus{border-color:var(--teal)}
+.dlg .err{color:var(--red);font-weight:700;min-height:20px;font-size:14px}
+.dlg .btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:14px}
+.dlg .btns button{padding:12px 18px;border-radius:999px;font-weight:800;background:#f1ece2}
+.dlg .btns button.pri{background:var(--teal);color:#fff}
+.dlg .btns button.warn{background:var(--red);color:#fff}
+.dlg .list-btns{display:grid;gap:6px;margin-top:8px}
+.dlg .list-btns button{text-align:left;padding:12px 14px;border-radius:14px;background:#f6f1e7;font-weight:700}
+.dlg .link{color:var(--teal);text-decoration:underline;font-size:14px;margin-top:6px}
+.prog{height:12px;border-radius:9px;background:#efe6d6;overflow:hidden;margin-top:12px}
+.prog i{display:block;height:100%;width:0;background:var(--teal);transition:width .2s}
 </style>
 </head>
 <body>
 <header>
   <div class="logo" aria-hidden="true">🎧</div>
   <div>
-    <h1>LUPCE English Journey</h1>
+    <h1 id="appTitle">LUPCE English Journey</h1>
     <div class="sub" id="partLabel">Listen &amp; Practise</div>
   </div>
-  <button class="gear" id="gearBtn" title="Settings" aria-label="Settings">⚙</button>
+  <button class="gear" id="gearBtn" title="Owner Mode" aria-label="Owner Mode">⚙</button>
 </header>
 
 <main>
-  <!-- START -->
-  <section class="start card" id="startView">
-    <div class="big-emoji">📚</div>
-    <h2 id="startTitle">Welcome!</h2>
-    <p id="startText">Choose your <b>LUPCE</b> audio folder to start listening.</p>
-    <button class="btn-main" id="openBtn">📂 Choose My Audio Folder</button><br>
-    <button class="link hidden" id="otherFolderBtn">Choose a different folder</button>
-    <input type="file" id="dirInput" webkitdirectory directory multiple class="hidden">
-    <input type="file" id="filesInput" accept="audio/*,.mp3,.m4a" multiple class="hidden">
-    <div class="msg-err hidden" id="startErr"></div>
+  <!-- START (no lessons yet) -->
+  <section class="start card hidden" id="startView">
+    <div class="big-emoji" id="startEmoji">⏳</div>
+    <h2 id="startTitle">Opening…</h2>
+    <p id="startText">Please wait a moment.</p>
   </section>
 
   <!-- PLAYER -->
@@ -203,6 +241,33 @@ body.app-open main{padding-bottom:120px}
       <div id="storyBody"></div>
     </section>
   </div>
+
+  <!-- OWNER MODE -->
+  <div class="layout hidden" id="ownerView" style="grid-template-columns:minmax(0,1fr)">
+    <section class="card owner-top">
+      <div class="ow-head"><h2>🔐 Owner Mode</h2><button class="btn-sec" id="ownerClose">✖ Close</button></div>
+      <div class="ow-part" id="owPart"></div>
+      <div class="ow-stat"><span id="owCount">0 recordings</span><span id="owSize">0 MB</span></div>
+      <div class="ow-grid">
+        <button id="owShareAll">📦 Share all lessons</button>
+        <button id="owShareStory">📦 Share one story</button>
+        <button id="owImport">📥 Import lessons</button>
+        <button id="owOld">📂 Bring in from old LUPCE folder</button>
+        <button id="owWord">📚 Load lesson list from Word files</button>
+        <button id="owPin">🔑 Change PIN</button>
+        <button id="owTicks">🧹 Clear all ✅ ticks</button>
+        <button id="owWipe" class="danger">🗑️ Remove all recordings</button>
+      </div>
+      <p class="ow-note" id="owNote"></p>
+    </section>
+    <section class="card">
+      <h2 style="margin:0 0 4px;font-size:20px">Lessons</h2>
+      <p class="hint">Press 🎙️ to add or replace a recording (any audio file: Recorder, WhatsApp, Download…). Press ✏️ to change a name.</p>
+      <div id="owEmpty" class="ow-empty hidden"></div>
+      <div class="stories" id="owTabs"></div>
+      <div id="owBody"></div>
+    </section>
+  </div>
 </main>
 
 <!-- MINI PLAYER (shown on phones while the big Play button is scrolled away) -->
@@ -217,53 +282,332 @@ body.app-open main{padding-bottom:120px}
   <button class="mb" id="miniNext" aria-label="Next" title="Next">▶▶</button>
 </div>
 
-<!-- SETTINGS -->
-<div class="sheet-bg hidden" id="sheet">
-  <div class="sheet">
-    <h3>Settings</h3>
-    <button class="row" id="changeFolderBtn">📂 Choose another audio folder</button>
-    <button class="row" id="clearTicksBtn">🧹 Clear all ✅ ticks (start again)</button>
-    <p>Your place and ✅ ticks are saved on this device.</p>
-    <button class="close" id="closeSheet">Close</button>
-  </div>
-</div>
+<input type="file" id="pickAudio" accept="audio/*,.mp3,.m4a,.aac,.wav,.ogg,.oga,.opus,.webm,.flac,.mp4,.3gp,.amr" class="hidden">
+<input type="file" id="pickBundle" accept=".lupce,.zip" class="hidden">
+<input type="file" id="pickWord" accept=".docx" multiple class="hidden">
+<input type="file" id="pickDir" webkitdirectory directory multiple class="hidden">
 
+<script>
+/* LUPCE lesson reader: turns the paragraphs of one Word story file into a lesson list.
+   Shared by the player (in the browser) and the build script (in Node). */
+function lupceParas(xml){
+  const out = [];
+  const pRe = /<w:p[\s>][\s\S]*?<\/w:p>|<w:p\/>/g;
+  let m;
+  while ((m = pRe.exec(xml))){
+    let t = "";
+    const tRe = /<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>|<w:tab\/>|<w:br\/>/g;
+    let r;
+    while ((r = tRe.exec(m[0]))) t += r[1] !== undefined ? r[1] : " ";
+    t = t.replace(/&lt;/g,"<").replace(/&gt;/g,">").replace(/&quot;/g,'"').replace(/&apos;/g,"'").replace(/&amp;/g,"&");
+    t = t.replace(/\s+/g," ").trim();
+    if (t) out.push(t);
+  }
+  return out;
+}
+function lupceParseStory(paras){
+  const LRE = /^(.*?)\s*[—–-]\s*🎧?\s*Listen\s*(\d{1,2})(?:\s*\.?\s*(?:Point\s*\.?\s*|\.\s*)(\d{1,2}))?\s*\.?\s*$/i;
+  const res = { partLetter:"", age:"", story:null, title:"", items:[] };
+  for (let i = 0; i < Math.min(paras.length, 15); i++){
+    const t = paras[i];
+    let m;
+    if (!res.partLetter && (m = t.match(/PART\s+([A-Z])\b/i))) res.partLetter = m[1].toUpperCase();
+    if (!res.age && (m = t.match(/AGE\s+(\d{1,2}\s*[–-]\s*\d{1,2})/i))) res.age = m[1].replace(/\s*[–-]\s*/,"–");
+    if (res.story === null && (m = t.match(/^STORY\s+0*(\d{1,3})\s*$/i))) { res.story = parseInt(m[1],10);
+      const nx = paras[i+1] || ""; if (nx && !/^DAY\b/i.test(nx) && !LRE.test(nx)) res.title = nx; }
+  }
+  const seen = new Set();
+  let day = "", sect = "";
+  for (const t of paras){
+    // a day heading, e.g. "DAY 6–8 — WORD MEANING — LISTEN, READ & UNDERSTAND" or "DAY 9 — HOLIDAYS!"
+    const dm = t.length < 220 && !LRE.test(t) ? t.match(/^DAY\s+(\d{1,2}(?:\s*[–-]\s*\d{1,2})?)\s*(?:[—–:-]\s*(.*))?$/) : null;
+    if (dm){
+      day = "Day " + dm[1].replace(/\s*[–-]\s*/, "–");
+      sect = (dm[2] || "").replace(/\s*\([^)]*[\u0980-\u09FF][^)]*\)/g, "").split(/\s+[—–-]\s+/)[0].trim();
+      continue;
+    }
+    const m = t.match(LRE); if (!m) continue;
+    const L = parseInt(m[2],10), P = m[3] ? parseInt(m[3],10) : 0;
+    let name = m[1].replace(/^[^A-Za-z0-9"“'‘]+/,"").replace(/\s*\([^)]*[\u0980-\u09FF][^)]*\)/g,"").replace(/\s+Point\s*$/i,"").trim();
+    // a whole-section listen (Rhyme, Story, Word Meaning …) takes its name from the day heading
+    if (!P) name = sect ? lupceTitleCase(sect) : L === 1 ? "Rhyme" : L === 2 ? "Story" : name;
+    if (!name) name = "Listen " + L + (P ? "." + P : "");
+    const k = L + "." + P; if (seen.has(k)) continue; seen.add(k);
+    const it = { L, P, t: name }; if (day) it.d = day;
+    res.items.push(it);
+  }
+  res.items.sort((a,b) => a.L - b.L || a.P - b.P);
+  return res;
+}
+function lupceTitleCase(s){
+  return String(s||"").toLowerCase().replace(/(^|[\s(“"'‘-])([a-z])/g, (a,b,c) => b + c.toUpperCase())
+    .replace(/\b(Of|The|A|An|And|On|In|To|For|At|By|With)\b/g, (w, _x, off) => off === 0 ? w : w.toLowerCase())
+    .replace(/^./, c => c.toUpperCase());
+}
+
+</script>
 <script>
 (() => {
 "use strict";
 const $ = id => document.getElementById(id);
-const AUDIO_RE = /\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac)$/i;
-const ANY_SOUND_RE = /\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac|wma|amr|3gp|3ga|mpeg|mpga)$/i;
-const FILE_RE  = /^(?:L|Listen)\s*0*(\d{1,2})(?:\s*(?:[-._]|point)\s*0*(\d{1,2}))?(?:\s*[-–—]?\s+(.*?))?\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac)$/i;
-let scanInfo = { root:"", dirs:0, sounds:0, unmatched:[] };
-function newScan(root){ scanInfo = { root: root || "", dirs:0, sounds:0, unmatched:[] }; }
-function noteSound(name, matched){ if (!ANY_SOUND_RE.test(name)) return; scanInfo.sounds++; if (!matched && scanInfo.unmatched.length < 5) scanInfo.unmatched.push(name); }
-const STORY_RE = /^story\s*[-_ ]?\s*0*(\d{1,3})(?:\s*[-–—:_]\s*(.+))?$/i;
-const PART_RE  = /^part\s+[a-z]\b/i;
-const STORE_KEY = "lupce.player.v1";
+const BUILTIN = { A: {"id":"A","age":"6–7","stories":[{"n":1,"title":"The Most Beautiful Prayer of Love","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Yes or No?","d":"Day 9"},{"L":9,"P":3,"t":"Dialogue: Arif & You","d":"Day 9"},{"L":9,"P":4,"t":"Who Is It?","d":"Day 9"},{"L":9,"P":5,"t":"Q&A","d":"Day 9"},{"L":9,"P":6,"t":"Presentation: This Is Me","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Conversation: Good Morning!","d":"Day 10"},{"L":10,"P":3,"t":"Who Said It?","d":"Day 10"},{"L":10,"P":4,"t":"Arif's Thought","d":"Day 10"},{"L":10,"P":5,"t":"Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Dialogue: At the Breakfast Table","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":11,"P":4,"t":"Ask Politely","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"At the Classroom Door","d":"Day 12"},{"L":12,"P":3,"t":"The Teacher's Lesson","d":"Day 12"},{"L":12,"P":4,"t":"Interview: Sami Asks Arif","d":"Day 12"},{"L":12,"P":5,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Picture Q&A","d":"Day 13"},{"L":13,"P":3,"t":"Conversation: Can I Help You, Mom?","d":"Day 13"},{"L":13,"P":4,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Feelings Game","d":"Day 14"},{"L":14,"P":3,"t":"Drama: Water for Dad","d":"Day 14"},{"L":14,"P":4,"t":"Q&A","d":"Day 14"},{"L":14,"P":5,"t":"Feelings Detective","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Listen & Say: Thank you for...","d":"Day 15"},{"L":15,"P":3,"t":"Who Thanks Whom?","d":"Day 15"},{"L":15,"P":4,"t":"Say Why: because","d":"Day 15"},{"L":15,"P":5,"t":"Dialogue: The Thank-You Card","d":"Day 15"},{"L":15,"P":6,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Good Choice or Not?","d":"Day 16"},{"L":16,"P":3,"t":"Presentation: My Good Choices","d":"Day 16"},{"L":16,"P":4,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Conversation: Welcome, Grandmother!","d":"Day 17"},{"L":17,"P":3,"t":"Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Arif's Diary","d":"Day 18"},{"L":18,"P":3,"t":"Put in Order","d":"Day 18"},{"L":18,"P":4,"t":"\"Did...?\" Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"New Situations","d":"Day 19"},{"L":19,"P":3,"t":"Arif's Mini Dialogue","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Picture Q&A","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme + Arif's Dua","d":"Day 20"},{"L":20,"P":4,"t":"Conversation: Good Night","d":"Day 20"},{"L":20,"P":5,"t":"Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"Listen & Say: I Am Arif","d":"Day 21"},{"L":21,"P":3,"t":"Listen for the Mistake","d":"Day 21"},{"L":21,"P":4,"t":"Story Order Q&A","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Presentation: My Family and Me","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Most Beautiful Prayer of Love","d":"Day 24"}]},{"n":2,"title":"Every Day on the Path of Light","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: Sit Beside Me","d":"Day 9"},{"L":9,"P":3,"t":"Question or Answer?","d":"Day 9"},{"L":9,"P":4,"t":"Q&A","d":"Day 9"},{"L":9,"P":5,"t":"Presentation: My Evening with Grandfather","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Dialogue: Rimi's Questions","d":"Day 10"},{"L":10,"P":3,"t":"Conversation: Asking Mom","d":"Day 10"},{"L":10,"P":4,"t":"Word & Meaning Match","d":"Day 10"},{"L":10,"P":5,"t":"Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Arif Tells Us","d":"Day 11"},{"L":11,"P":3,"t":"Picture Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Interview: Sami Asks Arif","d":"Day 12"},{"L":12,"P":3,"t":"The Teacher's Question","d":"Day 12"},{"L":12,"P":4,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Honesty Detective","d":"Day 13"},{"L":13,"P":3,"t":"Presentation: Honesty","d":"Day 13"},{"L":13,"P":4,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Picture Q&A","d":"Day 14"},{"L":14,"P":3,"t":"Conversation: Is It Yours?","d":"Day 14"},{"L":14,"P":4,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Listen & Say: Whose Is It?","d":"Day 15"},{"L":15,"P":3,"t":"Dialogue: The Lost Things","d":"Day 15"},{"L":15,"P":4,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Conversation: How Was Your Day?","d":"Day 16"},{"L":16,"P":3,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Why? Because... Q&A","d":"Day 17"},{"L":17,"P":3,"t":"My Own Reasons","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Drama: The Broken Cup","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"My Night Thoughts","d":"Day 19"},{"L":19,"P":3,"t":"Find in the Text","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Rhyme & Story Together","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Promise","d":"Day 20"},{"L":20,"P":5,"t":"Promise Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Story News","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Path of Light","d":"Day 24"}]},{"n":3,"title":"Showing Peace Through Our Actions","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: Ready to Help","d":"Day 9"},{"L":9,"P":3,"t":"Welcome to Our Festival!","d":"Day 9"},{"L":9,"P":4,"t":"Q&A","d":"Day 9"},{"L":9,"P":5,"t":"Presentation: Welcome to Our Festival","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Arif Tells Us","d":"Day 10"},{"L":10,"P":3,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Dialogue: You Are Safe with Me","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":11,"P":4,"t":"Kind Words or Not?","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Conversation: Excuse Me, Teacher","d":"Day 12"},{"L":12,"P":3,"t":"The Announcement","d":"Day 12"},{"L":12,"P":4,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Conversation: Together Again","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Picture Q&A","d":"Day 14"},{"L":14,"P":3,"t":"Conversation: Can They Sit Here?","d":"Day 14"},{"L":14,"P":4,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"The Teacher's Words","d":"Day 15"},{"L":15,"P":3,"t":"Interview: Grandfather Asks Arif","d":"Day 15"},{"L":15,"P":4,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"The Safety Steps","d":"Day 16"},{"L":16,"P":3,"t":"Dialogue: The Safety Game","d":"Day 16"},{"L":16,"P":4,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Traffic Light Game","d":"Day 17"},{"L":17,"P":3,"t":"Presentation: I Am a Peacemaker","d":"Day 17"},{"L":17,"P":4,"t":"Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Conversation: One Swing","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Arif's Letter","d":"Day 19"},{"L":19,"P":3,"t":"Find in the Letter","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Rhyme Beat","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Peace Promise","d":"Day 20"},{"L":20,"P":5,"t":"Promise Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"The Festival Tour","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: Peace in Action","d":"Day 24"}]},{"n":4,"title":"The Flower of Faith","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: The Storm Is Coming","d":"Day 9"},{"L":9,"P":3,"t":"Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Arif Tells Us","d":"Day 10"},{"L":10,"P":3,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Dialogue: Checking on Khala","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Conversation: We Need Your Help","d":"Day 12"},{"L":12,"P":3,"t":"Q&A","d":"Day 12"},{"L":12,"P":4,"t":"Presentation: Our Plan","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Picture Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Dialogue: Pass Me the Hammer","d":"Day 14"},{"L":14,"P":3,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Dialogue: Food for Khala","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Conversation: Thank You, Children","d":"Day 16"},{"L":16,"P":3,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Dad's Words","d":"Day 17"},{"L":17,"P":3,"t":"Interview: Rimi Asks Arif","d":"Day 17"},{"L":17,"P":4,"t":"Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Sort It!","d":"Day 18"},{"L":18,"P":3,"t":"Presentation: Five Good Deeds","d":"Day 18"},{"L":18,"P":4,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Conversation: Drip, Drip, Drip!","d":"Day 19"},{"L":19,"P":3,"t":"Q&A","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Key","d":"Day 20"},{"L":20,"P":5,"t":"Presentation Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Arif's Mini Book","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Flower of Faith","d":"Day 24"}]},{"n":5,"title":"The One Who Wakes Before the Sun","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: Time to Wake Up","d":"Day 9"},{"L":9,"P":3,"t":"Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Arif Tells Us","d":"Day 10"},{"L":10,"P":3,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Sound Detective","d":"Day 11"},{"L":11,"P":3,"t":"Dialogue: Cold Water, Warm Heart","d":"Day 11"},{"L":11,"P":4,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"The Meaning of Surah Al-Asr","d":"Day 12"},{"L":12,"P":3,"t":"Conversation: What Does It Mean?","d":"Day 12"},{"L":12,"P":4,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Dialogue: At the Window","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Presentation: My Morning Routine","d":"Day 14"},{"L":14,"P":3,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Dialogue: Packing My Bag","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Conversation: Three Jobs Before Breakfast","d":"Day 16"},{"L":16,"P":3,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Picture Q&A","d":"Day 17"},{"L":17,"P":3,"t":"Conversation: I Know the Answer!","d":"Day 17"},{"L":17,"P":4,"t":"Q&A","d":"Day 17"},{"L":17,"P":5,"t":"Presentation: Why I Wake Up Early","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"The Late Morning and the Early Morning","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Grandfather's Time Coins","d":"Day 19"},{"L":19,"P":3,"t":"Interview: Sami Asks Arif","d":"Day 19"},{"L":19,"P":4,"t":"Q&A","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Morning Poster","d":"Day 20"},{"L":20,"P":5,"t":"Poster Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Good Morning, Listeners!","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The One Who Wakes Before the Sun","d":"Day 24"}]},{"n":6,"title":"Even When No One Is Watching","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Arif Tells Us","d":"Day 9"},{"L":9,"P":3,"t":"Picture Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Dialogue: Walk Away or Tell the Truth?","d":"Day 10"},{"L":10,"P":3,"t":"Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Conversation: Who Sees Everything?","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Dialogue: I Have to Tell You Something","d":"Day 12"},{"L":12,"P":3,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"The Teacher's Words","d":"Day 13"},{"L":13,"P":3,"t":"Interview: Sami Asks Arif","d":"Day 13"},{"L":13,"P":4,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Picture Q&A","d":"Day 14"},{"L":14,"P":3,"t":"Dialogue: Let's Fix It Together","d":"Day 14"},{"L":14,"P":4,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Presentation: Our Lab Rules","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Two Doors","d":"Day 16"},{"L":16,"P":3,"t":"Presentation: Allah Sees Me Everywhere","d":"Day 16"},{"L":16,"P":4,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Arif Teaches: The Four Steps","d":"Day 17"},{"L":17,"P":3,"t":"Q&A","d":"Day 17"},{"L":17,"P":4,"t":"Listen & Check","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Conversation: Guess What Happened!","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Dialogue: The Droopy Plant","d":"Day 19"},{"L":19,"P":3,"t":"Q&A","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Rhyme Actions","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: What I Learned","d":"Day 20"},{"L":20,"P":5,"t":"Talk Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Arif's Comic Strip","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: Even When No One Is Watching","d":"Day 24"}]},{"n":7,"title":"The Debt That Can Never Be Repaid","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: Look at This Photo!","d":"Day 9"},{"L":9,"P":3,"t":"Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Interview: Arif Asks Mom","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Arif's Feelings","d":"Day 12"},{"L":12,"P":3,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Dialogue: Let Me Do It","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Conversation: Who Needs Help?","d":"Day 14"},{"L":14,"P":3,"t":"Q&A","d":"Day 14"},{"L":14,"P":4,"t":"Presentation: My Helping Hands","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Dialogue: Let's Play Quietly","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Gentle or Harsh?","d":"Day 16"},{"L":16,"P":3,"t":"Presentation: Gentle Words at Home","d":"Day 16"},{"L":16,"P":4,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Picture Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Drama: Taking Care of Mom","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Conversation: What Can Repay Them?","d":"Day 19"},{"L":19,"P":3,"t":"Q&A","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Dua for My Parents","d":"Day 20"},{"L":20,"P":5,"t":"Dua Talk Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Arif's Photo Book","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Debt That Can Never Be Repaid","d":"Day 24"}]},{"n":8,"title":"A Friend of Daylight","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: A Little Garden for Arif","d":"Day 9"},{"L":9,"P":3,"t":"Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Conversation: After Isha","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Presentation: My Daylight Plan","d":"Day 12"},{"L":12,"P":3,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Grandfather Explains","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Dialogue: Just One Day?","d":"Day 14"},{"L":14,"P":3,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Interview: Dad Asks Arif","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Finished or Half-Done?","d":"Day 16"},{"L":16,"P":3,"t":"Presentation: I Finish My Work","d":"Day 16"},{"L":16,"P":4,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"My Garden Diary","d":"Day 17"},{"L":17,"P":3,"t":"Find in the Diary","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Picture Q&A","d":"Day 18"},{"L":18,"P":3,"t":"Conversation: My First Harvest","d":"Day 18"},{"L":18,"P":4,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Conversation: These Are from My Garden","d":"Day 19"},{"L":19,"P":3,"t":"Q&A","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Habit Seeds","d":"Day 20"},{"L":20,"P":5,"t":"Presentation Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Welcome to Arif's Garden!","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: A Friend of Daylight","d":"Day 24"}]},{"n":9,"title":"The Bridge of Unity","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Arif Tells Us","d":"Day 9"},{"L":9,"P":3,"t":"Picture Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Conversation: Everyone Has a Problem","d":"Day 10"},{"L":10,"P":3,"t":"Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Interview: Arif Asks Two Uncles","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Dialogue: May I Say Something?","d":"Day 12"},{"L":12,"P":3,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"In the Mosque Courtyard","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Conversation: I'll Give...","d":"Day 14"},{"L":14,"P":3,"t":"Q&A","d":"Day 14"},{"L":14,"P":4,"t":"Presentation: Our Bridge Plan","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Dialogue: Safety First","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Picture Q&A","d":"Day 16"},{"L":16,"P":3,"t":"Teamwork Words","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Conversation: Walking Side by Side","d":"Day 17"},{"L":17,"P":3,"t":"Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Join Hands!","d":"Day 18"},{"L":18,"P":3,"t":"Presentation: What Unity Means","d":"Day 18"},{"L":18,"P":4,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Dialogue: Where Shall We Go?","d":"Day 19"},{"L":19,"P":3,"t":"Q&A","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Chain of Unity","d":"Day 20"},{"L":20,"P":5,"t":"Presentation Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Arif Tells the Story","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Bridge of Unity","d":"Day 24"}]},{"n":10,"title":"The Scale of Justice","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: Setting Up the Shop","d":"Day 9"},{"L":9,"P":3,"t":"Q&A","d":"Day 9"},{"L":9,"P":4,"t":"Presentation: Our Fruit Shop","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Dialogue: At the Shop","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Arif Tells Us","d":"Day 12"},{"L":12,"P":3,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Dialogue: A Small Difference","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Dialogue: Two More Guavas","d":"Day 14"},{"L":14,"P":3,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Dialogue: The Same Price","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Hand Scale Game","d":"Day 16"},{"L":16,"P":3,"t":"Presentation: Fair Hands","d":"Day 16"},{"L":16,"P":4,"t":"Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Picture Q&A","d":"Day 17"},{"L":17,"P":3,"t":"Conversation: Justice in Our Behaviour","d":"Day 17"},{"L":17,"P":4,"t":"Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Interview: Arif Asks Dad","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Conversation: Does It Add Up?","d":"Day 19"},{"L":19,"P":3,"t":"Q&A","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Scale of Justice","d":"Day 20"},{"L":20,"P":5,"t":"Presentation Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Arif's Story Map","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Scale of Justice","d":"Day 24"}]},{"n":11,"title":"The Dream of a Green Yard","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: Arriving at the Village","d":"Day 9"},{"L":9,"P":3,"t":"Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Grandfather's Compost Steps","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":11,"P":4,"t":"Presentation: How to Make Compost","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Dialogue: Three Kinds of Seedlings","d":"Day 12"},{"L":12,"P":3,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Interview: Arif Asks Grandfather","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Green Plate, Red Plate","d":"Day 14"},{"L":14,"P":3,"t":"Presentation: My Safe Food Rules","d":"Day 14"},{"L":14,"P":4,"t":"Q&A","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Conversation: Can I Have a Garden on the Roof?","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Picture Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Dialogue: Sorting the Waste","d":"Day 17"},{"L":17,"P":3,"t":"Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Conversation: Dinner from Our Roof)","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Three Food Journeys","d":"Day 19"},{"L":19,"P":3,"t":"Find in the Text","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: My Healthy Plate","d":"Day 20"},{"L":20,"P":5,"t":"Presentation Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Garden to Table","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Dream of a Green Yard","d":"Day 24"}]},{"n":12,"title":"The Map That Shows the Way","items":[{"L":1,"P":0,"t":"Rhyme","d":"Day 1–2"},{"L":2,"P":0,"t":"Story","d":"Day 3–5"},{"L":9,"P":1,"t":"Arif Says Hi","d":"Day 9"},{"L":9,"P":2,"t":"Conversation: Let's Pack!","d":"Day 9"},{"L":9,"P":3,"t":"Q&A","d":"Day 9"},{"L":10,"P":1,"t":"Arif Says Hi","d":"Day 10"},{"L":10,"P":2,"t":"Picture Q&A","d":"Day 10"},{"L":11,"P":1,"t":"Arif Says Hi","d":"Day 11"},{"L":11,"P":2,"t":"Dialogue: Asking for Directions","d":"Day 11"},{"L":11,"P":3,"t":"Q&A","d":"Day 11"},{"L":12,"P":1,"t":"Arif Says Hi","d":"Day 12"},{"L":12,"P":2,"t":"Dad's Words","d":"Day 12"},{"L":12,"P":3,"t":"Interview: Rimi Asks Arif","d":"Day 12"},{"L":12,"P":4,"t":"Q&A","d":"Day 12"},{"L":13,"P":1,"t":"Arif Says Hi","d":"Day 13"},{"L":13,"P":2,"t":"Conversation: Reading the Meaning","d":"Day 13"},{"L":13,"P":3,"t":"Q&A","d":"Day 13"},{"L":14,"P":1,"t":"Arif Says Hi","d":"Day 14"},{"L":14,"P":2,"t":"Grandfather Explains","d":"Day 14"},{"L":14,"P":3,"t":"Q&A","d":"Day 14"},{"L":14,"P":4,"t":"Presentation: Life Needs Guidance","d":"Day 14"},{"L":15,"P":1,"t":"Arif Says Hi","d":"Day 15"},{"L":15,"P":2,"t":"Dialogue: The Last Drumstick","d":"Day 15"},{"L":15,"P":3,"t":"Q&A","d":"Day 15"},{"L":16,"P":1,"t":"Arif Says Hi","d":"Day 16"},{"L":16,"P":2,"t":"Picture Q&A","d":"Day 16"},{"L":17,"P":1,"t":"Arif Says Hi","d":"Day 17"},{"L":17,"P":2,"t":"Compass Game","d":"Day 17"},{"L":17,"P":3,"t":"Presentation: My Inside Compass","d":"Day 17"},{"L":17,"P":4,"t":"Q&A","d":"Day 17"},{"L":18,"P":1,"t":"Arif Says Hi","d":"Day 18"},{"L":18,"P":2,"t":"Arif's Three Choices","d":"Day 18"},{"L":18,"P":3,"t":"Q&A","d":"Day 18"},{"L":19,"P":1,"t":"Arif Says Hi","d":"Day 19"},{"L":19,"P":2,"t":"Arif's Life Map","d":"Day 19"},{"L":19,"P":3,"t":"Find in the Text","d":"Day 19"},{"L":20,"P":1,"t":"Arif Says Hi","d":"Day 20"},{"L":20,"P":2,"t":"Say the Rhyme","d":"Day 20"},{"L":20,"P":3,"t":"Rhyme Q&A","d":"Day 20"},{"L":20,"P":4,"t":"Presentation: The Quran Is My Map","d":"Day 20"},{"L":20,"P":5,"t":"Presentation Q&A","d":"Day 20"},{"L":21,"P":1,"t":"Arif Says Hi","d":"Day 21"},{"L":21,"P":2,"t":"New Situations","d":"Day 21"},{"L":21,"P":3,"t":"Arif's Mini Dialogue","d":"Day 21"},{"L":22,"P":1,"t":"Arif Says Hi","d":"Day 22"},{"L":22,"P":2,"t":"Arif's Postcards","d":"Day 22"},{"L":22,"P":3,"t":"Q&A","d":"Day 22"},{"L":23,"P":1,"t":"Arif Says Hi","d":"Day 23"},{"L":23,"P":2,"t":"Family Drama","d":"Day 23"},{"L":23,"P":3,"t":"Q&A","d":"Day 23"},{"L":24,"P":1,"t":"Arif Says Hi","d":"Day 24"},{"L":24,"P":2,"t":"Think & Answer","d":"Day 24"},{"L":24,"P":3,"t":"Presentation: The Map That Shows the Way","d":"Day 24"}]}]} };
 
-/* ---------- saved progress ---------- */
-let saved = { cur:null, last:null, done:{} };
-try { const s = JSON.parse(localStorage.getItem(STORE_KEY) || "null"); if (s) saved = Object.assign(saved, s); } catch(e){}
-function save(){ try { localStorage.setItem(STORE_KEY, JSON.stringify(saved)); } catch(e){} }
+/* ================= which player is this? ================= */
+const NATIVE = window.LupceAndroid || null;
+function partFromFileName(){
+  let f = ""; try { f = decodeURIComponent(location.pathname.split("/").pop() || ""); } catch(e){}
+  f = f.replace(/\.[a-z0-9]{1,5}$/i, "");
+  // "LUPCE Player - Part C", "PART C", "part-c", "PartC" …
+  let m = f.match(/part\s*[-_ ]?\s*([a-z])(?![a-z])/i);
+  // … or just a letter at the end: "LUPCE Player - C", "LUPCE Player (C)"
+  if (!m) m = f.match(/(?:^|[\s\-_(])([a-z])\)?\s*$/i);
+  return m ? m[1].toUpperCase() : "A";
+}
+const PART_ID = (NATIVE && NATIVE.partId ? String(NATIVE.partId() || "A") : partFromFileName()).toUpperCase();
+const NS = "lupce." + PART_ID + ".";
+const AGES = { A:"6–7", B:"7–8", C:"8–9", D:"9–10", E:"10–11", F:"11–12" };
 
-/* ---------- folder handle memory (Chrome / Edge) ---------- */
-const canPickDir = typeof window.showDirectoryPicker === "function";
-function idb(){ return new Promise((res,rej)=>{ const r = indexedDB.open("lupce-player",1);
-  r.onupgradeneeded = () => r.result.createObjectStore("h"); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
-async function putHandle(h){ try{ const db=await idb(); await new Promise((res,rej)=>{const t=db.transaction("h","readwrite");t.objectStore("h").put(h,"root");t.oncomplete=res;t.onerror=()=>rej(t.error);}); }catch(e){} }
-async function getHandle(){ try{ const db=await idb(); return await new Promise((res)=>{const t=db.transaction("h","readonly");const q=t.objectStore("h").get("root");q.onsuccess=()=>res(q.result||null);q.onerror=()=>res(null);}); }catch(e){ return null; } }
+/* ================= icon (tab / shortcut) with the Part letter ================= */
+function lupceIconSvg(letter){
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">' +
+    '<rect width="256" height="256" rx="56" fill="#0f6e6a"/>' +
+    '<circle cx="114" cy="112" r="84" fill="#f6c445"/>' +
+    '<path d="M62 130v-14a52 52 0 0 1 104 0v14" fill="none" stroke="#0f6e6a" stroke-width="15" stroke-linecap="round"/>' +
+    '<rect x="50" y="116" width="28" height="50" rx="13" fill="#fff" stroke="#0f6e6a" stroke-width="9"/>' +
+    '<rect x="150" y="116" width="28" height="50" rx="13" fill="#fff" stroke="#0f6e6a" stroke-width="9"/>' +
+    '<circle cx="198" cy="198" r="44" fill="#e8742a" stroke="#fff" stroke-width="8"/>' +
+    '<text x="198" y="218" text-anchor="middle" font-family="Arial Black,Arial,Helvetica,sans-serif" font-weight="900" font-size="56" fill="#fff">' + letter + '</text></svg>';
+}
+(function setIcon(){
+  const l = document.createElement("link"); l.rel = "icon"; l.type = "image/svg+xml";
+  l.href = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(lupceIconSvg(PART_ID));
+  document.head.appendChild(l);
+})();
 
-/* ---------- state ---------- */
-let tracks = [];      // sorted list
+/* ================= small helpers ================= */
+const pad = n => String(n).padStart(2,"0");
+const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const keyOf = (s, it) => "S" + pad(s) + "-L" + pad(it.L) + (it.P ? "-" + it.P : "");
+const lsGet = (k, d) => { try { const v = localStorage.getItem(NS + k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } };
+const lsSet = (k, v) => { try { localStorage.setItem(NS + k, JSON.stringify(v)); } catch(e){} };
+function mb(bytes){ const m = bytes / 1048576; return (m >= 100 ? Math.round(m) : m.toFixed(1)) + " MB"; }
+function fmt(s){ if(!isFinite(s)||s<0) s=0; s=Math.floor(s); return Math.floor(s/60)+":"+pad(s%60); }
+function cleanName(s){ return String(s).replace(/[\\/:*?"<>|]+/g, " ").replace(/\s+/g," ").trim(); }
+function extOf(name, type){
+  const m = String(name||"").match(/\.([a-z0-9]{1,5})$/i); if (m) return m[1].toLowerCase();
+  const t = String(type||""); return /mpeg|mp3/.test(t) ? "mp3" : /mp4|m4a|aac/.test(t) ? "m4a" : /ogg|opus/.test(t) ? "ogg" : /wav/.test(t) ? "wav" : /webm/.test(t) ? "webm" : "mp3";
+}
+function today(){ const d = new Date(); return d.getFullYear() + "-" + pad(d.getMonth()+1) + "-" + pad(d.getDate()); }
+
+/* ================= dialogs ================= */
+let dlgStack = [];
+function dialog({ title, html = "", buttons = [{ label:"OK", value:true, kind:"pri" }], input = null, onInput = null, wide = false }){
+  return new Promise(resolve => {
+    const bg = document.createElement("div"); bg.className = "dlg-bg";
+    const box = document.createElement("div"); box.className = "dlg"; if (wide) box.style.maxWidth = "560px";
+    box.innerHTML = (title ? "<h3>" + title + "</h3>" : "") + '<div class="body">' + html + "</div>" +
+      (input ? '<input type="' + (input.type || "password") + '" inputmode="' + (input.mode || "numeric") + '" autocomplete="off" maxlength="' + (input.max || 8) + '" placeholder="' + esc(input.placeholder || "") + '"' +
+        (input.cls ? ' class="' + input.cls + '"' : "") + (input.value !== undefined ? ' value="' + esc(input.value) + '"' : "") + '><div class="err"></div>' : "") +
+      '<div class="btns"></div>';
+    bg.appendChild(box);
+    const done = v => { bg.remove(); dlgStack = dlgStack.filter(d => d !== entry); resolve(v); };
+    const entry = { close: () => done(null) };
+    const inp = box.querySelector("input");
+    const errEl = box.querySelector(".err");
+    const btns = box.querySelector(".btns");
+    for (const b of buttons){
+      const el = document.createElement("button"); el.textContent = b.label; if (b.kind) el.className = b.kind;
+      el.onclick = () => {
+        if (inp && b.value === true){
+          const v = inp.value.trim();
+          const problem = onInput ? onInput(v) : "";
+          if (problem){ errEl.textContent = problem; inp.select(); return; }
+          done(v); return;
+        }
+        done(b.value);
+      };
+      btns.appendChild(el);
+    }
+    box.querySelectorAll("[data-v]").forEach(el => el.addEventListener("click", () => done(el.getAttribute("data-v"))));
+    if (inp) inp.addEventListener("keydown", e => { if (e.key === "Enter"){ const pri = buttons.find(b => b.value === true); if (pri) [...btns.children][buttons.indexOf(pri)].click(); } });
+    bg.addEventListener("click", e => { if (e.target === bg) done(null); });
+    document.body.appendChild(bg); dlgStack.push(entry);
+    if (inp) setTimeout(() => inp.focus(), 50);
+  });
+}
+const tell = (title, html) => dialog({ title, html });
+const confirmBox = (title, html, yes = "Yes", kind = "pri") => dialog({ title, html, buttons:[{label:"Cancel", value:false},{label:yes, value:true, kind}] }).then(v => v === true);
+let busyEl = null;
+function busy(text, frac){
+  if (!busyEl){
+    busyEl = document.createElement("div"); busyEl.className = "dlg-bg";
+    busyEl.innerHTML = '<div class="dlg"><h3>⏳ Please wait…</h3><div class="body"></div><div class="prog"><i></i></div></div>';
+    document.body.appendChild(busyEl);
+  }
+  busyEl.querySelector(".body").innerHTML = text;
+  const bar = busyEl.querySelector(".prog");
+  bar.classList.toggle("hidden", frac === undefined || frac === null);
+  if (frac !== undefined && frac !== null) bar.querySelector("i").style.width = Math.round(Math.max(0, Math.min(1, frac)) * 100) + "%";
+}
+function busyEnd(){ if (busyEl){ busyEl.remove(); busyEl = null; } }
+
+/* ================= storage ================= */
+/* Computer: IndexedDB, one database per Part (so a "Part B" copy never touches Part A).
+   Android: the app's own private storage, through the LupceAndroid bridge. */
+const Store = (() => {
+  if (NATIVE){
+    const waiting = {};
+    window.__lupceRecDone = (key, ok, msg) => { const w = waiting["rec:" + key]; delete waiting["rec:" + key]; if (w) w({ ok: !!ok, msg: msg || "" }); };
+    return {
+      async init(){},
+      async getCatalog(){ try { const t = NATIVE.loadText("catalog.json"); return t ? JSON.parse(t) : null; } catch(e){ return null; } },
+      async setCatalog(c){ if (!NATIVE.saveText("catalog.json", c ? JSON.stringify(c) : "")) throw new Error("save"); },
+      async list(){ try { return JSON.parse(NATIVE.listRecs() || "{}"); } catch(e){ return {}; } },
+      async remove(key){ NATIVE.removeRec(key); },
+      async clear(){ NATIVE.clearRecs(); },
+      pick(key){ return new Promise(res => { waiting["rec:" + key] = res; NATIVE.pickAudio(key); }); },
+      src(key){ return "rec:" + key; }
+    };
+  }
+  let db = null;
+  const open = () => new Promise((res, rej) => {
+    const r = indexedDB.open("lupce-lessons-" + PART_ID, 1);
+    r.onupgradeneeded = () => { const d = r.result; d.createObjectStore("info"); d.createObjectStore("audio"); d.createObjectStore("meta"); };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  });
+  const tx = (stores, mode, fn) => new Promise((res, rej) => {
+    const t = db.transaction(stores, mode); let out;
+    Promise.resolve(fn(t)).then(v => out = v);
+    t.oncomplete = () => res(out); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error || new Error("abort"));
+  });
+  const req = r => new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); });
+  let asked = false;
+  return {
+    async init(){ db = await open(); },
+    async getCatalog(){ return tx(["meta"], "readonly", t => req(t.objectStore("meta").get("catalog"))).then(v => v || null); },
+    async setCatalog(c){ return tx(["meta"], "readwrite", t => { c ? t.objectStore("meta").put(c, "catalog") : t.objectStore("meta").delete("catalog"); }); },
+    async list(){
+      return tx(["info"], "readonly", async t => {
+        const s = t.objectStore("info");
+        const [keys, vals] = await Promise.all([req(s.getAllKeys()), req(s.getAll())]);
+        const o = {}; keys.forEach((k, i) => o[k] = vals[i]); return o;
+      });
+    },
+    async put(key, blob, info){
+      if (!asked && navigator.storage && navigator.storage.persist){ asked = true; try { await navigator.storage.persist(); } catch(e){} }
+      return tx(["info","audio"], "readwrite", t => { t.objectStore("audio").put(blob, key); t.objectStore("info").put(info, key); });
+    },
+    async blob(key){ return tx(["audio"], "readonly", t => req(t.objectStore("audio").get(key))); },
+    async remove(key){ return tx(["info","audio"], "readwrite", t => { t.objectStore("audio").delete(key); t.objectStore("info").delete(key); }); },
+    async clear(){ return tx(["info","audio"], "readwrite", t => { t.objectStore("audio").clear(); t.objectStore("info").clear(); }); }
+  };
+})();
+
+/* Check that a file really plays here, and find its length (computer only). */
+function probeAudio(blob){
+  return new Promise(res => {
+    const a = new Audio(); const u = URL.createObjectURL(blob); let fin = false;
+    const end = d => { if (fin) return; fin = true; URL.revokeObjectURL(u); a.removeAttribute("src"); res(d); };
+    a.preload = "metadata";
+    a.onloadedmetadata = () => {
+      if (isFinite(a.duration) && a.duration > 0) end(a.duration);
+      else { a.ontimeupdate = () => { a.ontimeupdate = null; end(isFinite(a.duration) ? a.duration : 0); }; try { a.currentTime = 1e9; } catch(e){ end(0); } }
+    };
+    a.onerror = () => end(-1);
+    setTimeout(() => end(-1), 12000);
+    a.src = u;
+  });
+}
+
+/* ================= zip (for share files and Word files) ================= */
+const CRC_T = (() => { const t = new Uint32Array(256); for (let n = 0; n < 256; n++){ let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; } return t; })();
+function crc32(u8, c = 0xFFFFFFFF){ for (let i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8); return c; }
+async function zipBlob(entries, onStep){ // entries: [{name, blob}] — stored (no compression; audio is already compressed)
+  const enc = new TextEncoder(), parts = [], central = []; let off = 0, i = 0;
+  const d = new Date(), dosT = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1),
+        dosD = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  for (const e of entries){
+    const nm = enc.encode(e.name), data = new Uint8Array(await e.blob.arrayBuffer()), crc = (crc32(data) ^ 0xFFFFFFFF) >>> 0, n = data.length;
+    const h = new DataView(new ArrayBuffer(30));
+    h.setUint32(0, 0x04034b50, true); h.setUint16(4, 20, true); h.setUint16(6, 0x0800, true); h.setUint16(8, 0, true);
+    h.setUint16(10, dosT, true); h.setUint16(12, dosD, true); h.setUint32(14, crc, true); h.setUint32(18, n, true); h.setUint32(22, n, true);
+    h.setUint16(26, nm.length, true); h.setUint16(28, 0, true);
+    parts.push(h.buffer, nm, e.blob);
+    const c = new DataView(new ArrayBuffer(46));
+    c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true);
+    c.setUint16(12, dosT, true); c.setUint16(14, dosD, true); c.setUint32(16, crc, true); c.setUint32(20, n, true); c.setUint32(24, n, true);
+    c.setUint16(28, nm.length, true); c.setUint32(42, off, true);
+    central.push(c.buffer, nm);
+    off += 30 + nm.length + n;
+    if (onStep) onStep(++i, entries.length);
+  }
+  let cdSize = 0; for (const p of central) cdSize += p.byteLength;
+  const z = new DataView(new ArrayBuffer(22));
+  z.setUint32(0, 0x06054b50, true); z.setUint16(8, entries.length, true); z.setUint16(10, entries.length, true);
+  z.setUint32(12, cdSize, true); z.setUint32(16, off, true);
+  return new Blob([...parts, ...central, z.buffer], { type:"application/octet-stream" });
+}
+async function zipEntries(file){ // read the table of contents of a zip file (a File/Blob)
+  const tailLen = Math.min(file.size, 65557);
+  const tail = new DataView(await file.slice(file.size - tailLen).arrayBuffer());
+  let p = -1; for (let i = tailLen - 22; i >= 0; i--) if (tail.getUint32(i, true) === 0x06054b50){ p = i; break; }
+  if (p < 0) throw new Error("not a zip");
+  const count = tail.getUint16(p + 10, true), cdSize = tail.getUint32(p + 12, true), cdOff = tail.getUint32(p + 16, true);
+  const cd = new DataView(await file.slice(cdOff, cdOff + cdSize).arrayBuffer());
+  const dec = new TextDecoder(), out = []; let q = 0;
+  for (let i = 0; i < count && q + 46 <= cd.byteLength; i++){
+    if (cd.getUint32(q, true) !== 0x02014b50) break;
+    const method = cd.getUint16(q + 10, true), csize = cd.getUint32(q + 20, true), usize = cd.getUint32(q + 24, true);
+    const nl = cd.getUint16(q + 28, true), xl = cd.getUint16(q + 30, true), cl = cd.getUint16(q + 32, true), lho = cd.getUint32(q + 42, true);
+    const name = dec.decode(new Uint8Array(cd.buffer, cd.byteOffset + q + 46, nl));
+    out.push({ name, method, csize, usize, lho });
+    q += 46 + nl + xl + cl;
+  }
+  return out;
+}
+async function zipRead(file, e){
+  const lh = new DataView(await file.slice(e.lho, e.lho + 30).arrayBuffer());
+  const start = e.lho + 30 + lh.getUint16(26, true) + lh.getUint16(28, true);
+  const raw = file.slice(start, start + e.csize);
+  if (e.method === 0) return raw;
+  if (e.method === 8 && typeof DecompressionStream === "function")
+    return new Response(raw.stream().pipeThrough(new DecompressionStream("deflate-raw"))).blob();
+  throw new Error("This file uses a kind of packing this browser cannot open.");
+}
+function download(blob, name){
+  const u = URL.createObjectURL(blob), a = document.createElement("a");
+  a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(u), 60000);
+}
+
+/* ================= lesson list (catalog) + recordings ================= */
+let catalog = null;   // { id, age, stories:[{n,title,items:[{L,P,t}]}] }
+let recs = {};        // key -> { size, name, ext, d }
+function catKeys(c){ const s = new Set(); if (c) for (const st of c.stories) for (const it of st.items) s.add(keyOf(st.n, it)); return s; }
+function catCount(c){ let n = 0; if (c) for (const st of c.stories) n += st.items.length; return n; }
+function storyRange(c){ if (!c || !c.stories.length) return ""; const a = c.stories[0].n, b = c.stories[c.stories.length-1].n; return a === b ? "Story " + pad(a) : "Story " + pad(a) + "–" + pad(b); }
+function partName(c){ const id = (c && c.id) || PART_ID; const age = (c && c.age) || AGES[id] || ""; return "Part " + id + (age ? " · Age " + age : ""); }
+function fileNameFor(st, it, ext){ return "audio/Story " + pad(st.n) + "/L" + pad(it.L) + (it.P ? "-" + it.P : "") + " " + cleanName(it.t) + "." + ext; }
+
+/* ================= saved progress ================= */
+let saved = Object.assign({ cur:null, last:null, done:{} }, lsGet("progress", null) || {});
+(function migrateOld(){ // bring the ✅ ticks over from the old folder-based player (Part A only)
+  if (PART_ID !== "A" || lsGet("progress", null)) return;
+  try { const old = JSON.parse(localStorage.getItem("lupce.player.v1") || "null"); if (old && old.done) saved = Object.assign(saved, old); } catch(e){}
+})();
+function save(){ lsSet("progress", saved); }
+
+/* ================= player state ================= */
+let tracks = [];      // lessons that have a recording, in book order
 let cur = 0;          // selected (next to play)
 let last = null;      // index of just-finished track
-let mode = null;      // null | "normal" | "again"
+let mode = null;      // null | "normal" | "again" | "preview"
 let loadedIdx = null; // which track is in the audio element
 let viewStory = null; // story number shown in list
 let audioUrl = null;
-/* ---------- Android app bridge (only inside the LUPCE Android app) ---------- */
-const NATIVE = window.LupceAndroid || null;
+let ownerOpen = false;
+
+/* ---------- Android audio bridge (only inside the LUPCE Android app) ---------- */
 class NativeAudio extends EventTarget {
   constructor(){ super(); this._src = ""; this._t = 0; this._d = NaN; this.paused = true; this.ended = false; this._wait = null;
     window.__lupceAudio = (ev, a, b) => this._ev(ev, a, b); }
@@ -294,179 +638,70 @@ const audio = NATIVE ? new NativeAudio() : new Audio();
 audio.preload = "auto";
 
 /* ---------- helpers ---------- */
-const pad = n => String(n).padStart(2,"0");
 function iconFor(t){
   const s = (t.title + " " + t.section).toLowerCase();
   const rules = [["presentation","🎙️"],["interview","🎤"],["rhyme","🎵"],["dua","🤲"],["says hi","👦"],["drama","🎭"],
     ["dialogue","👫"],["conversation","👫"],["diary","📖"],["story","📖"],["q&a","🗣️"],["think","🤔"],["answer","🗣️"],
-    ["feeling","😊"],["order","🔢"],["thought","💡"],["situation","⚡"],["mistake","🕵️"],["detective","🕵️"],
+    ["word","🔤"],["feeling","😊"],["order","🔢"],["thought","💡"],["situation","⚡"],["mistake","🕵️"],["detective","🕵️"],
     ["who","🎮"],["choice","🎮"],["yes or no","👍"],["game","🎮"],["say","🗣️"],["lesson","👂"],["door","🚪"]];
   for (const [k,e] of rules) if (s.includes(k)) return e;
   return "🎧";
 }
-function dayText(L){ return L===1 ? "Day 1–2" : L===2 ? "Day 3–5" : "Day " + L; }
+function dayText(x){ if (x && typeof x === "object"){ if (x.d) return x.d; x = x.L; } return x===1 ? "Day 1–2" : x===2 ? "Day 3–5" : "Day " + x; }
 function listenText(t){ return "🎧 Listen " + t.L + (t.P ? " Point " + t.P : ""); }
 function storyText(n){ return "Story " + pad(n); }
-function fmt(s){ if(!isFinite(s)||s<0) s=0; s=Math.floor(s); return Math.floor(s/60)+":"+pad(s%60); }
 
-/* ---------- reading the folder ---------- */
-function makeTrack(path, getFile){
-  const parts = path.split("/").filter(Boolean);
-  const name = parts.pop();
-  const m = name.match(FILE_RE); if (!m) return null;
-  let story = null, storyTitle = "", part = "";
-  for (const seg of parts){
-    const sm = seg.trim().match(STORY_RE);
-    if (sm){ story = parseInt(sm[1],10); storyTitle = (sm[2]||"").trim(); }
-    if (PART_RE.test(seg.trim())) part = seg.trim();
-  }
-  if (story === null) story = 0;
-  const L = parseInt(m[1],10), P = m[2] ? parseInt(m[2],10) : 0;
-  const section = L===1 ? "Rhyme" : L===2 ? "Story" : "";
-  const title = ((m[3]||"").trim().replace(/\s+-\s+/g, ": ")) || section || ("Listen " + L);
-  return { story, storyTitle, part, L, P, title, section, path, getFile,
-           key: "S"+pad(story)+"-L"+pad(L)+(P?"-"+P:"") };
+function updateHeader(){
+  const age = (catalog && catalog.age) || AGES[PART_ID] || "";
+  $("appTitle").textContent = (age ? "AGE " + age + " YEARS · " : "") + "PART " + PART_ID;
+  $("partLabel").textContent = "LUPCE English Journey" + (catalog && catalog.stories.length ? " · " + storyRange(catalog) : "");
+  document.title = "LUPCE Player - Part " + PART_ID;
 }
-async function walkHandle(dir, prefix, out, depth){
-  if (depth > 5) return;
-  for await (const [name, h] of dir.entries()){
-    if (h.kind === "directory"){ scanInfo.dirs++; await walkHandle(h, prefix + name + "/", out, depth+1); }
-    else { const t = AUDIO_RE.test(name) ? makeTrack(prefix + name, () => h.getFile()) : null; noteSound(name, !!t); if (t) out.push(t); }
-  }
-}
-function fromFileList(list){
+/* ================= building the child's lesson list ================= */
+function buildTracks(){
   const out = [];
-  const first = list[0] && list[0].webkitRelativePath ? list[0].webkitRelativePath.split("/")[0] : "";
-  newScan(first);
-  for (const f of list){
-    const p = f.webkitRelativePath || f.name;
-    const t = AUDIO_RE.test(f.name) ? makeTrack(p, () => Promise.resolve(f)) : null;
-    noteSound(f.name, !!t); if (t) out.push(t);
+  if (catalog) for (const st of catalog.stories) for (const it of st.items){
+    const key = keyOf(st.n, it);
+    if (!recs[key]) continue;
+    out.push({ story: st.n, storyTitle: st.title || "", L: it.L, P: it.P, title: it.t,
+               d: it.d || "", section: it.P ? "" : it.t, key });
   }
   return out;
 }
-function useTracks(list){
-  // remove duplicates (same key) — keep first
-  const seen = new Set(); list = list.filter(t => !seen.has(t.key) && seen.add(t.key));
-  list.sort((a,b)=> a.story-b.story || a.L-b.L || a.P-b.P);
-  if (!list.length){ noLessons(); return; }
-  tracks = list;
-  const parts = [...new Set(list.map(t=>t.part).filter(Boolean))];
-  $("partLabel").textContent = parts.length === 1 ? parts[0] : "Listen & Practise";
-  const ci = tracks.findIndex(t=>t.key===saved.cur);
-  cur = ci >= 0 ? ci : 0;
-  const li = tracks.findIndex(t=>t.key===saved.last);
-  last = li >= 0 ? li : null;
+function refreshChild(){
+  const keepCur = tracks[cur] ? tracks[cur].key : saved.cur;
+  const keepLast = last !== null && tracks[last] ? tracks[last].key : saved.last;
+  tracks = buildTracks();
+  updateHeader();
+  if (ownerOpen) return;
+  if (!tracks.length){
+    document.body.classList.remove("app-open");
+    $("appView").classList.add("hidden");
+    $("startView").classList.remove("hidden");
+    $("startEmoji").textContent = "🎙️";
+    $("startTitle").textContent = "No lessons yet";
+    $("startText").innerHTML = "A grown-up can add the recordings.<br>Press <b>⚙</b> at the top and enter the PIN.";
+    $("mini").classList.remove("show");
+    return;
+  }
+  const ci = tracks.findIndex(t => t.key === keepCur); cur = ci >= 0 ? ci : 0;
+  const li = tracks.findIndex(t => t.key === keepLast); last = li >= 0 ? li : null;
   viewStory = tracks[cur].story;
   $("startView").classList.add("hidden");
+  $("ownerView").classList.add("hidden");
   document.body.classList.add("app-open");
   $("appView").classList.remove("hidden");
   renderAll();
 }
 
-/* ---------- start screen ---------- */
-const esc = t => String(t).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-function noLessons(){
-  // forget the wrong folder so the next press lets the user choose again
-  if (!NATIVE){ idb().then(db => { try { db.transaction("h","readwrite").objectStore("h").delete("root"); } catch(_){} }).catch(()=>{}); }
-  $("startTitle").textContent = "Let's find your lessons 📂";
-  $("startText").innerHTML = "Press the button and choose the <b>LUPCE</b> folder.";
-  $("openBtn").innerHTML = "📂 Choose My Audio Folder";
-  $("openBtn").onclick = pickFolder;
-  $("otherFolderBtn").classList.add("hidden");
-  const i = scanInfo;
-  let html = "<b>No lesson audio was found in the folder" + (i.root ? " “" + esc(i.root) + "”" : "") + ".</b><br>";
-  if (i.sounds === 0){
-    html += "This folder has no audio files" + (i.dirs ? " (it has " + i.dirs + " folder" + (i.dirs>1?"s":"") + " inside)." : ".") +
-            " Maybe a different folder was chosen. Please choose the <b>LUPCE</b> folder that has <b>Story 01</b>, <b>Story 02</b> … inside it.";
-  } else {
-    html += "It has " + i.sounds + " audio file" + (i.sounds>1?"s":"") + ", but their names do not start with a lesson number. For example:<br>" +
-            i.unmatched.map(n => "• " + esc(n)).join("<br>") +
-            "<br>Please name them like <b>L01 Rhyme.mp3</b> or <b>L09-1 Arif Says Hi.mp3</b>, inside folders named <b>Story 01</b>, <b>Story 02</b> …" +
-            (i.unmatched.some(n => /\.(wma|amr|3gp|3ga)$/i.test(n)) ? "<br>Some files are in a format the player cannot play. Please save them as <b>MP3</b>." : "");
-  }
-  showStartError(html);
-}
-function showStartError(html){ const e=$("startErr"); e.innerHTML = html; e.classList.remove("hidden");
-  $("startView").classList.remove("hidden"); $("appView").classList.add("hidden"); }
-function showBusy(){
-  $("startView").classList.remove("hidden"); $("appView").classList.add("hidden");
-  $("startTitle").textContent = "Opening your lessons… ⏳";
-  $("startText").innerHTML = "Please wait a moment.";
-}
-window.__lupceNativeFiles = (list, root) => {
-  const out = [];
-  newScan(root || (list[0] ? list[0].p.split("/")[0] : ""));
-  for (const o of list){ const nm = o.p.split("/").pop(); const t = AUDIO_RE.test(o.p) ? makeTrack(o.p, null) : null; noteSound(nm, !!t); if (t){ t.uri = o.u; out.push(t); } }
-  useTracks(out);
-};
-window.__lupceNativeError = msg => { showStartError(msg || "The folder could not be opened. Please choose it again."); $("openBtn").innerHTML = "📂 Choose My Audio Folder"; $("openBtn").onclick = pickFolder; };
-window.__lupceNativeBusy = showBusy;
-async function pickFolder(){
-  $("startErr").classList.add("hidden");
-  if (NATIVE){ NATIVE.pickFolder(); return; }
-  if (canPickDir){
-    let h;
-    try { h = await window.showDirectoryPicker({ mode:"read", startIn:"desktop" }); }
-    catch(e){ if (e && e.name === "AbortError") return; $("dirInput").click(); return; }
-    await putHandle(h);
-    const out=[]; newScan(h.name); try { await walkHandle(h, h.name + "/", out, 0); } catch(e){ showStartError("Could not read this folder. Please try again."); return; }
-    useTracks(out);
-  } else {
-    $("dirInput").click();
-  }
-}
-async function reopenSaved(h){
-  try {
-    let p = await h.queryPermission({mode:"read"});
-    if (p !== "granted") p = await h.requestPermission({mode:"read"});
-    if (p !== "granted") { showStartError("Please press <b>Allow</b> so the player can open your audio folder."); return; }
-    const out=[]; newScan(h.name); await walkHandle(h, h.name + "/", out, 0); useTracks(out);
-  } catch(e){
-    try { const db = await idb(); db.transaction("h","readwrite").objectStore("h").delete("root"); } catch(_){}
-    $("startTitle").textContent = "Let's find your lessons 📂";
-    $("startText").innerHTML = "Press the button and choose the <b>LUPCE</b> folder again.";
-    $("openBtn").innerHTML = "📂 Choose My Audio Folder";
-    $("openBtn").onclick = pickFolder;
-    $("otherFolderBtn").classList.add("hidden");
-    showStartError("The folder was not found in its old place. It may have been moved or renamed, or the memory card / USB is not connected. Your ✅ ticks are safe.");
-  }
-}
-$("dirInput").addEventListener("change", e => { const l = e.target.files; if (l && l.length) useTracks(fromFileList(l)); e.target.value=""; });
-$("filesInput").addEventListener("change", e => { const l = e.target.files; if (l && l.length) useTracks(fromFileList(l)); e.target.value=""; });
-$("otherFolderBtn").onclick = pickFolder;
-
-(async function init(){
-  if (NATIVE){
-    $("startText").innerHTML = "Choose your <b>LUPCE</b> folder on the memory card to start listening.";
-    if (NATIVE.hasSavedFolder()){
-      $("startTitle").textContent = "Welcome back! 👋";
-      $("startText").innerHTML = "Press the button to open your lessons.";
-      $("openBtn").innerHTML = "▶ Open My Lessons";
-      $("openBtn").onclick = () => { $("startErr").classList.add("hidden"); NATIVE.openSaved(); };
-      $("otherFolderBtn").classList.remove("hidden");
-    } else { $("openBtn").onclick = pickFolder; }
-    return;
-  }
-  const h = canPickDir ? await getHandle() : null;
-  if (h){
-    $("startTitle").textContent = "Welcome back! 👋";
-    $("startText").innerHTML = "Press the button to open your lessons.";
-    $("openBtn").innerHTML = "▶ Open My Lessons";
-    $("openBtn").onclick = () => reopenSaved(h);
-    $("otherFolderBtn").classList.remove("hidden");
-  } else {
-    $("openBtn").onclick = pickFolder;
-  }
-})();
-
-/* ---------- playback ---------- */
+/* ================= playback ================= */
 async function loadTrack(i){
   if (loadedIdx === i && audio.src) return;
-  if (NATIVE){ audio.src = tracks[i].uri; loadedIdx = i; return; }
-  const f = await tracks[i].getFile();
+  const key = tracks[i].key;
+  if (NATIVE){ audio.src = Store.src(key); loadedIdx = i; return; }
+  const b = await Store.blob(key); if (!b) throw new Error("missing");
   if (audioUrl) URL.revokeObjectURL(audioUrl);
-  audioUrl = URL.createObjectURL(f);
+  audioUrl = URL.createObjectURL(b);
   audio.src = audioUrl; loadedIdx = i;
 }
 function stopAudio(){ audio.pause(); mode = null; }
@@ -487,7 +722,7 @@ async function playAgain(){
 }
 function onPlayBtn(){
   if (!audio.paused){ audio.pause(); renderPlayer(); return; }
-  if (mode && loadedIdx !== null && audio.currentTime > 0 && !audio.ended){ audio.play().catch(()=>{}); renderPlayer(); return; }
+  if (mode && mode !== "preview" && loadedIdx !== null && audio.currentTime > 0 && !audio.ended){ audio.play().catch(()=>{}); renderPlayer(); return; }
   playCurrent();
 }
 let repeatOn = false, heard = 0;
@@ -499,6 +734,7 @@ function renderRepeat(){
 }
 $("repeatBtn").onclick = () => { repeatOn = !repeatOn; heard = 0; renderRepeat(); };
 audio.addEventListener("ended", () => {
+  if (mode === "preview"){ mode = null; previewKey = null; renderOwnerList(); return; }
   if (repeatOn && mode){
     if (mode === "normal"){ saved.done[tracks[cur].key] = 1; last = cur; saved.last = tracks[last].key; save(); }
     heard++; renderRepeat();
@@ -529,8 +765,8 @@ audio.addEventListener("ended", () => {
 });
 audio.addEventListener("timeupdate", updateTime);
 audio.addEventListener("loadedmetadata", updateTime);
-audio.addEventListener("play", renderPlayer);
-audio.addEventListener("pause", renderPlayer);
+audio.addEventListener("play", () => { renderPlayer(); if (ownerOpen) renderOwnerList(); });
+audio.addEventListener("pause", () => { renderPlayer(); if (ownerOpen && mode === "preview") renderOwnerList(); });
 
 function select(i){
   if (i < 0 || i >= tracks.length) return;
@@ -548,9 +784,9 @@ function showFinishBanner(fin){
   let head, text;
   if (isLast){ head = "🏆 Wonderful! You finished every lesson!"; text = "MashaAllah! Press 🔁 Listen Again to hear the last one again."; }
   else if (a.story !== b.story){ head = "🌟 " + storyText(a.story) + " is complete! Well done!"; text = "Next: <b>" + storyText(b.story) + " · " + listenText(b) + "</b>. Press Play when you are ready."; }
-  else if (a.L !== b.L){
-    const what = a.L===1 ? "The Rhyme" : a.L===2 ? "The Story" : "Day " + a.L;
-    head = "🎉 Well done! " + what + " is complete."; text = "Next: <b>" + dayText(b.L) + " · " + listenText(b) + "</b>. Press Play when you are ready."; }
+  else if (dayText(a) !== dayText(b)){
+    const what = a.P ? dayText(a) : (/^(Rhyme|Story)$/.test(a.title) ? "The " + a.title : esc(a.title));
+    head = "🎉 Well done! " + what + " is complete."; text = "Next: <b>" + dayText(b) + " · " + listenText(b) + "</b>. Press Play when you are ready."; }
   else { $("banner").classList.add("hidden"); return; }
   $("banner").innerHTML = '<span class="h">' + head + "</span>" + text;
   $("banner").classList.remove("hidden");
@@ -559,19 +795,20 @@ function showFinishBanner(fin){
 /* ---------- render ---------- */
 function setStatus(t){ $("statusLabel").textContent = t; }
 function updateTime(){
+  if (mode === "preview") return;
   const d = audio.duration, c = audio.currentTime;
   $("tCur").textContent = fmt(c); $("tDur").textContent = fmt(d);
   if (!seeking) $("seek").value = d ? Math.round(c/d*1000) : 0;
 }
 let seeking = false;
 $("seek").addEventListener("input", () => { seeking = true; const d = audio.duration; if (d) $("tCur").textContent = fmt($("seek").value/1000*d); });
-$("seek").addEventListener("change", () => { const d = audio.duration; if (d && mode) audio.currentTime = $("seek").value/1000*d; seeking = false; });
+$("seek").addEventListener("change", () => { const d = audio.duration; if (d && mode && mode !== "preview") audio.currentTime = $("seek").value/1000*d; seeking = false; });
 
 function renderPlayer(){
-  if (!tracks.length) return;
+  if (!tracks.length || ownerOpen || mode === "preview") return;
   const t = tracks[cur];
   $("storyChip").textContent = storyText(t.story);
-  $("dayChip").textContent = dayText(t.L);
+  $("dayChip").textContent = dayText(t);
   $("nowIcon").textContent = iconFor(t);
   $("listenLabel").textContent = listenText(t);
   $("titleLabel").textContent = t.title;
@@ -610,6 +847,7 @@ function renderPlayer(){
 }
 
 function renderList(){
+  if (ownerOpen) return;
   const stories = [...new Set(tracks.map(t=>t.story))];
   const tabs = $("storyTabs"); tabs.innerHTML = "";
   for (const s of stories){
@@ -633,9 +871,9 @@ function renderList(){
   body.appendChild(bar);
   let lastL = null, group = null;
   for (const t of st){
-    if (t.L !== lastL){
-      lastL = t.L; group = document.createElement("div"); group.className="day";
-      group.innerHTML = '<span class="day-h">' + dayText(t.L) + (t.section ? " · " + t.section : "") + "</span>";
+    if (dayText(t) !== lastL){
+      lastL = dayText(t); group = document.createElement("div"); group.className="day";
+      group.innerHTML = '<span class="day-h">' + esc(dayText(t) + (t.section ? " · " + t.section : "")) + "</span>";
       body.appendChild(group);
     }
     const i = tracks.indexOf(t);
@@ -654,7 +892,7 @@ function renderList(){
 }
 function renderAll(){ renderPlayer(); renderList(); }
 
-/* ---------- buttons ---------- */
+/* ---------- child buttons ---------- */
 $("playBtn").onclick = onPlayBtn;
 $("againBtn").onclick = playAgain;
 $("miniPlay").onclick = onPlayBtn;
@@ -665,28 +903,499 @@ $("miniNext").onclick = () => select(cur + 1);
 (function(){
   const mini = $("mini");
   if ("IntersectionObserver" in window){
-    new IntersectionObserver(es => { es.forEach(e => mini.classList.toggle("show", !e.isIntersecting && document.body.classList.contains("app-open"))); })
+    new IntersectionObserver(es => { es.forEach(e => mini.classList.toggle("show", !e.isIntersecting && document.body.classList.contains("app-open") && !ownerOpen)); })
       .observe($("playBtn"));
   } else { mini.classList.add("show"); }
 })();
 $("prevBtn").onclick = () => select(cur - 1);
 $("nextBtn").onclick = () => select(cur + 1);
 document.addEventListener("keydown", e => {
-  if (!tracks.length || e.target.tagName === "INPUT") return;
+  if (!tracks.length || ownerOpen || dlgStack.length || e.target.tagName === "INPUT") return;
   if (e.code === "Space"){ e.preventDefault(); onPlayBtn(); }
 });
-$("gearBtn").onclick = () => $("sheet").classList.remove("hidden");
-$("closeSheet").onclick = () => $("sheet").classList.add("hidden");
-$("sheet").addEventListener("click", e => { if (e.target.id === "sheet") $("sheet").classList.add("hidden"); });
-$("changeFolderBtn").onclick = () => { $("sheet").classList.add("hidden"); stopAudio(); pickFolder(); };
-$("clearTicksBtn").onclick = () => {
-  if (!confirm("Clear all ✅ ticks and start again from the first lesson?")) return;
-  saved = { cur:null, last:null, done:{} }; save(); last = null; $("sheet").classList.add("hidden");
-  if (tracks.length) select(0);
+
+/* ================= PIN ================= */
+const getPin = () => String(lsGet("pin", "1234"));
+async function askPin(title = "🔐 Owner Mode"){
+  const forgot = '<button class="link" data-v="forgot">Forgot PIN?</button>';
+  const v = await dialog({ title, html: "<p>Enter the PIN to continue.</p>" + forgot,
+    input:{ placeholder:"PIN" }, onInput: v => v === getPin() ? "" : "Wrong PIN. Please try again.",
+    buttons:[{label:"Cancel", value:null},{label:"OK", value:true, kind:"pri"}] });
+  if (v === "forgot") return forgotPin();
+  return v !== null && v === getPin();
+}
+async function forgotPin(){
+  const a = 12 + Math.floor(Math.random() * 30), b = 3 + Math.floor(Math.random() * 6);
+  const v = await dialog({ title:"Forgot PIN?", html:"<p>A grown-up can reset the PIN to <b>1234</b>.</p><p>What is <b>" + a + " × " + b + "</b> ?</p>",
+    input:{ placeholder:"Answer", max:4 }, onInput: v => Number(v) === a * b ? "" : "Not correct. Try again.",
+    buttons:[{label:"Cancel", value:null},{label:"Reset PIN", value:true, kind:"pri"}] });
+  if (v === null) return false;
+  lsSet("pin", "1234"); await tell("PIN reset", "<p>The PIN is now <b>1234</b>. Please change it in Owner Mode.</p>");
+  return true;
+}
+async function changePin(){
+  const p1 = await dialog({ title:"🔑 New PIN", html:"<p>Type a new PIN (4 to 8 numbers).</p>", input:{ placeholder:"New PIN" },
+    onInput: v => /^\d{4,8}$/.test(v) ? "" : "Please use 4 to 8 numbers.", buttons:[{label:"Cancel", value:null},{label:"Next", value:true, kind:"pri"}] });
+  if (p1 === null) return;
+  const p2 = await dialog({ title:"🔑 New PIN", html:"<p>Type the new PIN again.</p>", input:{ placeholder:"Again" },
+    onInput: v => v === p1 ? "" : "The two PINs are not the same.", buttons:[{label:"Cancel", value:null},{label:"Save", value:true, kind:"pri"}] });
+  if (p2 === null) return;
+  lsSet("pin", p1); await tell("✅ PIN changed", "<p>Please remember your new PIN.</p>");
+}
+
+/* ================= OWNER MODE ================= */
+let owStory = null, previewKey = null;
+$("gearBtn").onclick = async () => { if (ownerOpen) return; if (await askPin()) openOwner(); };
+function openOwner(){
+  stopAudio(); audio.removeAttribute("src"); loadedIdx = null; hideBanner();
+  ownerOpen = true; document.body.classList.add("owner");
+  $("mini").classList.remove("show");
+  $("appView").classList.add("hidden"); $("startView").classList.add("hidden");
+  $("ownerView").classList.remove("hidden");
+  if (catalog && (owStory === null || !catalog.stories.some(s => s.n === owStory))) owStory = viewStory || (catalog.stories[0] && catalog.stories[0].n);
+  renderOwner(); window.scrollTo(0, 0);
+}
+function closeOwner(){
+  if (mode === "preview"){ audio.pause(); audio.removeAttribute("src"); mode = null; previewKey = null; }
+  ownerOpen = false; document.body.classList.remove("owner");
+  $("ownerView").classList.add("hidden");
+  loadedIdx = null;
+  refreshChild(); window.scrollTo(0, 0);
+}
+$("ownerClose").onclick = closeOwner;
+
+function renderOwner(){
+  updateHeader();
+  const total = catCount(catalog), keys = catKeys(catalog);
+  let have = 0, bytes = 0;
+  for (const k in recs){ bytes += recs[k].size || 0; if (keys.has(k)) have++; }
+  $("owPart").innerHTML = catalog
+    ? "<b>" + esc(partName(catalog)) + "</b> · " + storyRange(catalog) + " · " + total + " lessons" +
+      "<br><small>This player is for <b>Part " + PART_ID + "</b>" + (NATIVE ? " (LUPCE Part " + PART_ID + " app)." : " (from the file name).") + "</small>"
+    : "<b>Part " + PART_ID + "</b> — no lesson list yet.";
+  $("owCount").textContent = "🎙️ " + have + " of " + total + " recorded";
+  $("owSize").textContent = "💾 " + mb(bytes) + " used";
+  $("owNote").innerHTML = NATIVE
+    ? "Recordings are kept inside this app. Uninstalling the app removes them — keep a backup with <b>📦 Share all lessons → Save</b>."
+    : "Recordings are kept inside this browser on this computer. If you clear the browser's data, they are removed — keep a backup with <b>📦 Share all lessons</b>." +
+      "<br>To make a player for another Part, copy this file and name it like <b>LUPCE Player - Part B.html</b>.";
+  const hasCat = !!(catalog && catalog.stories.length);
+  ["owShareAll","owShareStory","owWipe"].forEach(id => $(id).disabled = !have);
+  $("owOld").disabled = !hasCat;
+  $("owEmpty").classList.toggle("hidden", hasCat);
+  if (!hasCat) $("owEmpty").innerHTML = "<b>📚 This player has no lesson list yet.</b><br>Press <b>📚 Load lesson list from Word files</b> and choose the Word files of <b>Part " + PART_ID +
+      "</b> (Story by Story). Or press <b>📥 Import lessons</b> to open a lessons file from another parent.";
+  renderOwnerList();
+}
+function renderOwnerList(){
+  const tabs = $("owTabs"), body = $("owBody"); tabs.innerHTML = ""; body.innerHTML = "";
+  if (!catalog || !catalog.stories.length) return;
+  for (const st of catalog.stories){
+    const n = st.items.filter(it => recs[keyOf(st.n, it)]).length;
+    const b = document.createElement("button");
+    b.className = "story-tab" + (st.n === owStory ? " on" : "");
+    b.innerHTML = storyText(st.n) + "<small>" + (n === st.items.length ? "✅ " : "") + n + " / " + st.items.length + "</small>";
+    b.onclick = () => { owStory = st.n; renderOwnerList(); };
+    tabs.appendChild(b);
+  }
+  const st = catalog.stories.find(s => s.n === owStory) || catalog.stories[0]; owStory = st.n;
+  const head = document.createElement("div"); head.className = "story-head";
+  head.innerHTML = "<h3><span class='sn'></span><button class='ed' title='Edit story name'>✏️</button></h3><span class='cnt'></span>";
+  head.querySelector(".sn").textContent = storyText(st.n) + (st.title ? " — " + st.title : "");
+  head.querySelector(".ed").onclick = () => editStoryName(st);
+  const n = st.items.filter(it => recs[keyOf(st.n, it)]).length;
+  head.querySelector(".cnt").textContent = n + " of " + st.items.length + " recorded";
+  body.appendChild(head);
+  let lastL = null, group = null;
+  for (const it of st.items){
+    if (dayText(it) !== lastL){
+      lastL = dayText(it); group = document.createElement("div"); group.className = "day";
+      group.innerHTML = '<span class="day-h">' + esc(dayText(it) + (it.P ? "" : " · " + it.t)) + "</span>";
+      body.appendChild(group);
+    }
+    const key = keyOf(st.n, it), r = recs[key];
+    const row = document.createElement("div"); row.className = "orow " + (r ? "has" : "missing");
+    const playing = previewKey === key && !audio.paused;
+    row.innerHTML = '<span class="dot">' + (r ? "✅" : "⚪") + '</span><span class="t"><span class="nm"><b></b><button class="ed" title="Edit name">✏️</button></span><small></small></span>' +
+      (r ? '<button class="ob pv" title="Listen">' + (playing ? "⏸" : "▶") + "</button>" : "") +
+      '<button class="ob add" title="Add / Replace recording">🎙️<span class="lbl">' + (r ? "Replace" : "Add") + "</span></button>" +
+      (r ? '<button class="ob del" title="Remove">🗑️<span class="lbl">Remove</span></button>' : "");
+    row.querySelector("b").textContent = it.t;
+    row.querySelector("small").textContent = "Listen " + it.L + (it.P ? "." + it.P : "") +
+      (r ? " · " + (r.d > 0 ? fmt(r.d) + " · " : "") + mb(r.size || 0) + (r.name ? " · " + r.name : "") : " · no recording yet");
+    const pv = row.querySelector(".pv"); if (pv) pv.onclick = () => preview(key);
+    row.querySelector(".add").onclick = () => addRecording(st, it);
+    row.querySelector(".ed").onclick = () => editLessonName(st, it);
+    const del = row.querySelector(".del"); if (del) del.onclick = () => removeRecording(st, it);
+    group.appendChild(row);
+  }
+}
+async function reloadRecs(){ recs = await Store.list(); }
+
+/* ---------- edit names (lesson and story) ---------- */
+async function askName(title, html, current){
+  const v = await dialog({ title, html, input:{ type:"text", mode:"text", max:90, cls:"txt", value: current, placeholder:"Type the new name" },
+    onInput: v => v.trim() ? "" : "Please type a name.",
+    buttons:[{label:"Cancel", value:null},{label:"Save", value:true, kind:"pri"}] });
+  return v === null ? null : v.replace(/\s+/g, " ").trim();
+}
+async function saveCatalog(){
+  try { await Store.setCatalog(catalog); return true; }
+  catch(e){ tell("⚠️ Not saved", "<p>The change could not be saved.</p>"); return false; }
+}
+async function editLessonName(st, it){
+  stopPreview();
+  const v = await askName("✏️ Lesson name", "<p><b>" + storyText(st.n) + " · " + esc(dayText(it)) + " · Listen " + it.L + (it.P ? "." + it.P : "") + "</b></p><p>Delete the old name and type the new one.</p>", it.t);
+  if (v === null || v === it.t) return;
+  it.t = v; if (await saveCatalog()) renderOwner();
+}
+async function editStoryName(st){
+  stopPreview();
+  const v = await askName("✏️ Story name", "<p><b>" + storyText(st.n) + "</b></p><p>Delete the old name and type the new one.</p>", st.title || "");
+  if (v === null || v === st.title) return;
+  st.title = v; if (await saveCatalog()) renderOwner();
+}
+
+/* ---------- preview in owner mode ---------- */
+async function preview(key){
+  if (previewKey === key && mode === "preview"){
+    if (!audio.paused){ audio.pause(); } else { audio.play().catch(()=>{}); }
+    renderOwnerList(); return;
+  }
+  audio.pause(); previewKey = key; mode = "preview"; loadedIdx = null;
+  try {
+    if (NATIVE) audio.src = Store.src(key);
+    else { const b = await Store.blob(key); if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = URL.createObjectURL(b); audio.src = audioUrl; }
+    audio.currentTime = 0; await audio.play();
+  } catch(e){ mode = null; previewKey = null; tell("⚠️ Could not play", "<p>This recording could not be played. Please replace it with another file (MP3 is safest).</p>"); }
+  renderOwnerList();
+}
+function stopPreview(){ if (mode === "preview"){ audio.pause(); audio.removeAttribute("src"); mode = null; previewKey = null; } }
+
+/* ---------- add / replace / remove ---------- */
+let pendingAdd = null;
+async function addRecording(st, it){
+  stopPreview();
+  const key = keyOf(st.n, it);
+  if (NATIVE){
+    const r = await Store.pick(key);
+    busyEnd();
+    if (r.ok){ await reloadRecs(); renderOwner(); }
+    else if (r.msg) tell("⚠️ Not added", "<p>" + esc(r.msg) + "</p>");
+    return;
+  }
+  pendingAdd = { st, it, key };
+  $("pickAudio").value = ""; $("pickAudio").click();
+}
+$("pickAudio").addEventListener("change", async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = "";
+  if (!f || !pendingAdd) return;
+  const { st, it, key } = pendingAdd; pendingAdd = null;
+  busy("Checking the audio file…");
+  const d = await probeAudio(f);
+  if (d < 0){ busyEnd(); tell("⚠️ This file does not play", "<p><b>" + esc(f.name) + "</b> could not be played on this computer.</p><p>Please choose an <b>MP3</b> or <b>M4A</b> file.</p>"); return; }
+  try {
+    busy("Saving <b>" + esc(it.t) + "</b>…");
+    const blob = f.slice(0, f.size, f.type || "audio/mpeg");
+    await Store.put(key, blob, { name: f.name, size: f.size, ext: extOf(f.name, f.type), type: f.type || "", d, date: Date.now() });
+    await reloadRecs(); busyEnd(); renderOwner();
+  } catch(err){ busyEnd(); tell("⚠️ Not saved", "<p>The recording could not be saved. The computer may be out of space.</p>"); }
+});
+async function removeRecording(st, it){
+  stopPreview();
+  if (!await confirmBox("🗑️ Remove recording?", "<p><b>" + storyText(st.n) + " · Listen " + it.L + (it.P ? "." + it.P : "") + "</b><br>" + esc(it.t) + "</p><p>The child will not see this lesson until you add a recording again.</p>", "Remove", "warn")) return;
+  await Store.remove(keyOf(st.n, it)); await reloadRecs(); renderOwner();
+}
+
+/* ---------- clear ticks / PIN / wipe ---------- */
+$("owPin").onclick = changePin;
+$("owTicks").onclick = async () => {
+  if (!await confirmBox("🧹 Clear all ✅ ticks?", "<p>The child will start again from the first lesson. Recordings stay.</p>", "Clear ticks", "warn")) return;
+  saved = { cur:null, last:null, done:{} }; save(); last = null; cur = 0;
+  tell("✅ Done", "<p>All ticks are cleared.</p>");
+};
+$("owWipe").onclick = async () => {
+  stopPreview();
+  if (!await confirmBox("🗑️ Remove ALL recordings?", "<p>Every recording of <b>Part " + PART_ID + "</b> will be deleted from this " + (NATIVE ? "app" : "computer") + ".</p><p>Make a backup first with <b>📦 Share all lessons</b> if you may need them again.</p>", "Next", "warn")) return;
+  if (!await askPin("🔐 Confirm with PIN")) return;
+  busy("Removing recordings…"); await Store.clear(); await reloadRecs(); busyEnd();
+  saved = { cur:null, last:null, done:{} }; save(); last = null; cur = 0;
+  renderOwner(); tell("✅ Removed", "<p>All recordings are removed.</p>");
 };
 
-/* test hook (used only for automatic testing) */
-window.__lupceLoad = list => useTracks(fromFileList(list));
+/* ================= SHARE / BACKUP ================= */
+function manifestFor(keys){
+  const m = { format:"LUPCE-lessons", version:1, made: new Date().toISOString(), part: catalog, recordings:{} };
+  for (const st of catalog.stories) for (const it of st.items){
+    const k = keyOf(st.n, it), r = recs[k]; if (!r || !keys.has(k)) continue;
+    m.recordings[k] = { file: fileNameFor(st, it, r.ext || "mp3"), name: r.name || "", size: r.size || 0, d: r.d || 0, type: r.type || "" };
+  }
+  return m;
+}
+async function shareKeys(keys, label){
+  stopPreview();
+  const m = manifestFor(keys); const count = Object.keys(m.recordings).length;
+  if (!count){ tell("Nothing to share", "<p>There are no recordings to share yet.</p>"); return; }
+  const fname = "LUPCE Part " + PART_ID + " - " + label + " - " + today() + ".lupce";
+  if (NATIVE){
+    const how = await dialog({ title:"📦 " + esc(label), html:"<p><b>" + count + "</b> recordings will go into one file:<br><b>" + esc(fname) + "</b></p>" +
+      '<div class="list-btns"><button data-v="send">📤 Send (WhatsApp, Bluetooth, Drive…)</button><button data-v="save">💾 Save on this phone (backup)</button></div>',
+      buttons:[{label:"Cancel", value:null}] });
+    if (!how) return;
+    busy("Making the lessons file…", 0);
+    NATIVE.exportBundle(JSON.stringify(m), fname, how === "send");
+    return; // native reports back through __lupceExportDone
+  }
+  if (!await confirmBox("📦 " + esc(label), "<p><b>" + count + "</b> recordings will go into one file:<br><b>" + esc(fname) + "</b></p><p>It will be saved in your <b>Downloads</b> folder. Send it to other parents (WhatsApp, Drive, pen drive…). It is also your backup.</p>", "Make file")) return;
+  try {
+    const entries = [{ name:"lupce.json", blob: new Blob([JSON.stringify(m)], { type:"application/json" }) }];
+    const list = Object.entries(m.recordings);
+    let i = 0;
+    for (const [k, r] of list){ busy("Collecting recordings… " + (++i) + " / " + list.length, i / list.length * 0.5); entries.push({ name: r.file, blob: await Store.blob(k) }); }
+    const z = await zipBlob(entries, (j, n) => busy("Making the file… " + j + " / " + n, 0.5 + j / n * 0.5));
+    busyEnd(); download(z, fname);
+    tell("✅ File ready", "<p><b>" + esc(fname) + "</b> (" + mb(z.size) + ") is saved in your Downloads folder.</p>");
+  } catch(e){ busyEnd(); tell("⚠️ Could not make the file", "<p>" + esc(e.message || e) + "</p>"); }
+}
+window.__lupceExportProgress = (done, total) => busy("Making the lessons file… " + done + " / " + total, total ? done / total : 0);
+window.__lupceExportDone = (ok, msg) => { busyEnd(); if (ok) tell("✅ Done", "<p>" + esc(msg || "The lessons file is ready.") + "</p>"); else if (msg) tell("⚠️ Not finished", "<p>" + esc(msg) + "</p>"); };
+$("owShareAll").onclick = () => shareKeys(new Set(Object.keys(recs)), "All lessons");
+$("owShareStory").onclick = async () => {
+  const opts = catalog.stories.map(st => { const n = st.items.filter(it => recs[keyOf(st.n, it)]).length;
+    return n ? '<button data-v="' + st.n + '">' + storyText(st.n) + " — " + esc(st.title) + " <small>(" + n + ")</small></button>" : ""; }).join("");
+  const v = await dialog({ title:"📦 Share one story", html:"<p>Choose a story:</p><div class='list-btns'>" + opts + "</div>", buttons:[{label:"Cancel", value:null}] });
+  if (!v) return;
+  const st = catalog.stories.find(s => String(s.n) === String(v));
+  shareKeys(new Set(st.items.map(it => keyOf(st.n, it))), storyText(st.n));
+};
+
+/* ================= IMPORT a lessons file ================= */
+function checkManifest(m){
+  if (!m || m.format !== "LUPCE-lessons" || !m.part || !Array.isArray(m.part.stories)) return "This is not a LUPCE lessons file.";
+  const id = String(m.part.id || "").toUpperCase();
+  if (id && id !== PART_ID)
+    return "This file is for <b>Part " + esc(id) + "</b>, but this player is for <b>Part " + PART_ID + "</b>.<br>" +
+      (NATIVE ? "Please open it in the <b>LUPCE Part " + esc(id) + "</b> app." : (id === "A" ? "Please open it in the main <b>LUPCE Player.html</b>." : "Please open it in a player file named like <b>LUPCE Player - Part " + esc(id) + ".html</b>."));
+  return "";
+}
+async function confirmImport(m){
+  const n = Object.keys(m.recordings || {}).length;
+  return confirmBox("📥 Import lessons", "<p><b>" + esc(partName(m.part)) + "</b> · " + storyRange(m.part) + "</p><p><b>" + n + "</b> recordings will be added. If a lesson already has a recording, it will be replaced. Other recordings stay.</p>", "Import");
+}
+$("owImport").onclick = () => { stopPreview(); if (NATIVE){ NATIVE.importBundle(); return; } $("pickBundle").value = ""; $("pickBundle").click(); };
+$("pickBundle").addEventListener("change", async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f) return;
+  try {
+    busy("Opening the file…");
+    const ents = await zipEntries(f);
+    const je = ents.find(x => x.name === "lupce.json"); if (!je) throw new Error("This is not a LUPCE lessons file.");
+    const m = JSON.parse(await (await zipRead(f, je)).text());
+    busyEnd();
+    const bad = checkManifest(m); if (bad){ tell("⚠️ Wrong file", "<p>" + bad + "</p>"); return; }
+    if (!await confirmImport(m)) return;
+    const byName = {}; for (const x of ents) byName[x.name] = x;
+    const list = Object.entries(m.recordings || {}); let ok = 0, i = 0;
+    for (const [k, r] of list){
+      busy("Importing… " + (++i) + " / " + list.length, i / list.length);
+      const ze = byName[r.file]; if (!ze) continue;
+      const b = await zipRead(f, ze);
+      const blob = b.slice(0, b.size, r.type || ("audio/" + (extOf(r.file) === "mp3" ? "mpeg" : extOf(r.file))));
+      await Store.put(k, blob, { name: r.name || r.file.split("/").pop(), size: blob.size, ext: extOf(r.file), type: r.type || "", d: r.d || 0, date: Date.now() });
+      ok++;
+    }
+    catalog = m.part; await Store.setCatalog(catalog); await reloadRecs(); busyEnd();
+    if (!catalog.stories.some(s => s.n === owStory)) owStory = catalog.stories[0] && catalog.stories[0].n;
+    renderOwner(); tell("✅ Imported", "<p><b>" + ok + "</b> recordings were added.</p>");
+  } catch(err){ busyEnd(); tell("⚠️ Could not import", "<p>" + esc(err.message || err) + "</p>"); }
+});
+// Android: the app reads the file, shows us its list first, then copies the audio.
+window.__lupceBundleInfo = async (json) => {
+  busyEnd();
+  let m = null; try { m = JSON.parse(json); } catch(e){}
+  const bad = checkManifest(m); if (bad){ NATIVE.importBundleGo(false); tell("⚠️ Wrong file", "<p>" + bad + "</p>"); return; }
+  if (!await confirmImport(m)){ NATIVE.importBundleGo(false); return; }
+  window.__lupcePendingCatalog = m.part;
+  busy("Importing…", 0); NATIVE.importBundleGo(true);
+};
+window.__lupceImportProgress = (done, total) => busy("Importing… " + done + " / " + total, total ? done / total : 0);
+window.__lupceImportDone = async (ok, count, msg) => {
+  if (ok && window.__lupcePendingCatalog){ catalog = window.__lupcePendingCatalog; await Store.setCatalog(catalog); }
+  window.__lupcePendingCatalog = null;
+  await reloadRecs(); busyEnd();
+  if (catalog && !catalog.stories.some(s => s.n === owStory)) owStory = catalog.stories[0] && catalog.stories[0].n;
+  renderOwner();
+  tell(ok ? "✅ Imported" : "⚠️ Could not import", "<p>" + (ok ? "<b>" + count + "</b> recordings were added." : esc(msg || "The file could not be read.")) + "</p>");
+};
+window.__lupceBusy = t => busy(esc(t || "Please wait…"));
+window.__lupceBusyEnd = () => busyEnd();
+
+/* ================= LESSON LIST from Word files ================= */
+$("owWord").onclick = async () => {
+  stopPreview();
+  const ok = await confirmBox("📚 Load lesson list from Word files",
+    "<p>Choose the Word files (.docx) of <b>Part " + PART_ID + "</b> — all stories at once.</p><p>The player reads every <b>🎧 Listen</b> in them and makes the lesson list. Recordings you already added stay with their lessons.</p>", "Choose files");
+  if (!ok) return;
+  if (NATIVE){ NATIVE.pickDocx(); return; }
+  $("pickWord").value = ""; $("pickWord").click();
+};
+$("pickWord").addEventListener("change", async e => {
+  const files = [...(e.target.files || [])]; e.target.value = ""; if (!files.length) return;
+  const xmls = [];
+  try {
+    let i = 0;
+    for (const f of files){
+      busy("Reading " + esc(f.name) + "… (" + (++i) + " / " + files.length + ")", i / files.length);
+      try {
+        const ents = await zipEntries(f); const d = ents.find(x => x.name === "word/document.xml");
+        if (!d) throw new Error("x");
+        xmls.push({ name: f.name, xml: await (await zipRead(f, d)).text() });
+      } catch(err){ xmls.push({ name: f.name, xml: null }); }
+    }
+  } finally { busyEnd(); }
+  useWord(xmls);
+});
+window.__lupceDocxReady = (n) => {
+  const xmls = [];
+  for (let i = 0; i < n; i++) xmls.push({ name: NATIVE.docxName(i), xml: NATIVE.docxXml(i) || null });
+  busyEnd(); useWord(xmls);
+};
+async function useWord(xmls){
+  const stories = {}, problems = []; let partL = "", age = "";
+  for (const x of xmls){
+    if (!x.xml){ problems.push(esc(x.name) + " — not a Word (.docx) file"); continue; }
+    const r = lupceParseStory(lupceParas(x.xml));
+    if (r.story === null || !r.items.length){ problems.push(esc(x.name) + " — no story or no 🎧 Listen found"); continue; }
+    if (r.partLetter){ if (partL && partL !== r.partLetter) problems.push(esc(x.name) + " — is Part " + r.partLetter); partL = partL || r.partLetter; }
+    age = age || r.age;
+    stories[r.story] = { n: r.story, title: lupceTitleCase(r.title), items: r.items };
+  }
+  const list = Object.values(stories).sort((a,b) => a.n - b.n);
+  if (!list.length){ tell("⚠️ No lessons found", "<p>No lesson list could be read from these files.</p>" + (problems.length ? "<p>" + problems.join("<br>") + "</p>" : "")); return; }
+  if (partL && partL !== PART_ID){
+    tell("⚠️ Different Part", "<p>These Word files are <b>Part " + partL + "</b>, but this player is for <b>Part " + PART_ID + "</b>.</p><p>" +
+      (NATIVE ? "Please use the <b>LUPCE Part " + partL + "</b> app." : "Copy this player file and name it <b>LUPCE Player - Part " + partL + ".html</b>, then open that copy and load these files there.") + "</p>");
+    return;
+  }
+  const nc = { id: PART_ID, age: age || (catalog && catalog.age) || AGES[PART_ID] || "", stories: list };
+  // stories that were in the old list but not in these files are kept (the owner may load a few files only)
+  if (catalog && catalog.id === PART_ID){
+    for (const old of catalog.stories) if (!stories[old.n]) nc.stories.push(old);
+    nc.stories.sort((a,b) => a.n - b.n);
+  }
+  const total = catCount(nc), newKeys = catKeys(nc);
+  const orphans = Object.keys(recs).filter(k => !newKeys.has(k));
+  let html = "<p><b>" + esc(partName(nc)) + "</b> · " + storyRange(nc) + "</p><p>" +
+    list.map(s => storyText(s.n) + " — " + esc(s.title) + " (" + s.items.length + ")").join("<br>") + "</p><p>Total: <b>" + total + "</b> lessons.</p>";
+  if (problems.length) html += "<p style='color:#b3392b'>Skipped:<br>" + problems.join("<br>") + "</p>";
+  if (orphans.length) html += "<p>⚠️ <b>" + orphans.length + "</b> recordings do not match any lesson in the new list. They will be removed.</p>";
+  if (!await confirmBox("📚 Use this lesson list?", html, "Use this list")) return;
+  for (const k of orphans) await Store.remove(k);
+  catalog = nc; await Store.setCatalog(catalog); await reloadRecs();
+  owStory = list[0].n; renderOwner();
+  tell("✅ Lesson list ready", "<p>Now add the recordings with 🎙️.</p>");
+}
+
+/* ================= bring in from the OLD folder ================= */
+const FILE_RE  = /^(?:L|Listen)\s*0*(\d{1,2})(?:\s*(?:[-._]|point)\s*0*(\d{1,2}))?(?:(?:\s*[-–—_]\s*|\s+)(.*?))?\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac)$/i;
+const STORY_RE = /^story\s*[-_ ]?\s*0*(\d{1,3})(?:\s*[-–—:_]\s*(.+))?$/i;
+function keyFromPath(path){
+  const parts = path.split("/").filter(Boolean); const name = parts.pop();
+  const m = name.match(FILE_RE); if (!m) return null;
+  let story = null; for (const seg of parts){ const sm = seg.trim().match(STORY_RE); if (sm) story = parseInt(sm[1], 10); }
+  if (story === null) return null;
+  return keyOf(story, { L: parseInt(m[1], 10), P: m[2] ? parseInt(m[2], 10) : 0 });
+}
+$("owOld").onclick = async () => {
+  stopPreview();
+  if (!await confirmBox("📂 Bring in from old LUPCE folder", "<p>Choose your old <b>LUPCE</b> audio folder (the one with <b>Story 01</b>, <b>Story 02</b> … inside).</p><p>Every file named like <b>L09-1 Arif Says Hi.mp3</b> will be copied into the player, to the right lesson. After that the folder is not needed any more.</p>", "Choose folder")) return;
+  if (NATIVE){ NATIVE.pickOldFolder(); return; }
+  if (typeof window.showDirectoryPicker === "function"){
+    let h; try { h = await window.showDirectoryPicker({ mode:"read" }); } catch(e){ if (e && e.name === "AbortError") return; $("pickDir").click(); return; }
+    const files = []; busy("Reading the folder…");
+    const walk = async (dir, prefix, depth) => { if (depth > 6) return; for await (const [name, x] of dir.entries()){
+      if (x.kind === "directory") await walk(x, prefix + name + "/", depth + 1); else files.push({ path: prefix + name, get: () => x.getFile() }); } };
+    try { await walk(h, h.name + "/", 0); } catch(e){ busyEnd(); tell("⚠️", "<p>Could not read this folder.</p>"); return; }
+    busyEnd(); importOld(files);
+  } else { $("pickDir").value = ""; $("pickDir").click(); }
+};
+$("pickDir").addEventListener("change", e => {
+  const l = [...(e.target.files || [])]; e.target.value = "";
+  importOld(l.map(f => ({ path: f.webkitRelativePath || f.name, get: () => Promise.resolve(f) })));
+});
+function matchOld(paths){
+  const keys = catKeys(catalog), use = [], seen = new Set(); let audioFiles = 0, outside = 0;
+  for (const p of paths){
+    if (!/\.(mp3|m4a|aac|wav|ogg|oga|opus|mp4|webm|flac)$/i.test(p.path)) continue;
+    audioFiles++;
+    const k = keyFromPath(p.path);
+    if (!k || !keys.has(k)){ outside++; continue; }
+    if (seen.has(k)) continue; seen.add(k); use.push(Object.assign({ key: k }, p));
+  }
+  return { use, audioFiles, outside };
+}
+async function confirmOld(r){
+  if (!r.use.length){
+    tell("⚠️ Nothing to bring in", "<p>" + (r.audioFiles ? r.audioFiles + " audio files were found, but none matched a lesson of <b>Part " + PART_ID + "</b>." : "No audio files were found in this folder.") +
+      "</p><p>Files must be inside folders named <b>Story 01</b>, <b>Story 02</b> … and named like <b>L09-1 Arif Says Hi.mp3</b>.</p>"); return false;
+  }
+  const replace = r.use.filter(x => recs[x.key]).length;
+  return confirmBox("📂 Bring in " + r.use.length + " recordings?", "<p><b>" + r.use.length + "</b> recordings match lessons of Part " + PART_ID + ".</p>" +
+    (replace ? "<p>" + replace + " lessons already have a recording; they will be replaced.</p>" : "") +
+    (r.outside ? "<p>" + r.outside + " files did not match a lesson and will be skipped.</p>" : ""), "Bring in");
+}
+async function importOld(files){
+  const r = matchOld(files);
+  if (!await confirmOld(r)) return;
+  let ok = 0, bad = 0, i = 0;
+  for (const x of r.use){
+    busy("Copying… " + (++i) + " / " + r.use.length, i / r.use.length);
+    try {
+      const f = await x.get();
+      await Store.put(x.key, f.slice(0, f.size, f.type || "audio/mpeg"), { name: f.name, size: f.size, ext: extOf(f.name, f.type), type: f.type || "", d: 0, date: Date.now() });
+      ok++;
+    } catch(e){ bad++; }
+  }
+  await reloadRecs(); busyEnd(); renderOwner();
+  tell("✅ Done", "<p><b>" + ok + "</b> recordings were copied into the player." + (bad ? "<br>" + bad + " could not be copied." : "") + "</p>");
+}
+window.__lupceOldFiles = async (list) => { // Android: [{p, u}]
+  busyEnd();
+  const r = matchOld(list.map(o => ({ path: o.p, u: o.u })));
+  if (!await confirmOld(r)) return;
+  busy("Copying…", 0);
+  NATIVE.copyMany(JSON.stringify(r.use.map(x => ({ u: x.u, k: x.key, n: x.path.split("/").pop() }))));
+};
+window.__lupceCopyProgress = (done, total) => busy("Copying… " + done + " / " + total, total ? done / total : 0);
+window.__lupceCopyDone = async (ok, bad) => {
+  await reloadRecs(); busyEnd(); renderOwner();
+  tell("✅ Done", "<p><b>" + ok + "</b> recordings were copied into the player." + (bad ? "<br>" + bad + " could not be copied." : "") + "</p>");
+};
+window.__lupceNativeError = msg => { busyEnd(); tell("⚠️", "<p>" + esc(msg || "Something went wrong.") + "</p>"); };
+
+/* ================= Android back button ================= */
+window.__lupceBack = () => {
+  if (busyEl) return true;
+  if (dlgStack.length){ dlgStack[dlgStack.length - 1].close(); return true; }
+  if (ownerOpen){ closeOwner(); return true; }
+  return false;
+};
+
+/* ================= start ================= */
+(async function init(){
+  $("startView").classList.remove("hidden");
+  try { await Store.init(); } catch(e){
+    $("startEmoji").textContent = "⚠️"; $("startTitle").textContent = "Storage is not available";
+    $("startText").innerHTML = "Please open this player in <b>Google Chrome</b> or <b>Microsoft Edge</b> (not in a private window).";
+    return;
+  }
+  catalog = await Store.getCatalog();
+  if (!catalog && BUILTIN[PART_ID]) catalog = JSON.parse(JSON.stringify(BUILTIN[PART_ID]));
+  await reloadRecs();
+  refreshChild();
+})();
+
+/* test hooks (used only for automatic testing) */
+window.__lupceTest = { get catalog(){ return catalog; }, get recs(){ return recs; }, get tracks(){ return tracks; }, PART_ID, zipBlob, zipEntries, zipRead, keyFromPath };
 })();
 </script>
 </body>

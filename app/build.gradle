@@ -10,8 +10,43 @@ android {
         applicationId "org.lupce.player"
         minSdk 21
         targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        versionCode 2
+        versionName "2.0"
+    }
+
+    // One code, six apps (Part A to Part F): each Part has its own app and its own recordings.
+    flavorDimensions "part"
+    productFlavors {
+        partA {
+            dimension "part"
+            applicationId "org.lupce.player"
+            manifestPlaceholders = [appLabel: "LUPCE Part A"]
+        }
+        partB {
+            dimension "part"
+            applicationId "org.lupce.player.partb"
+            manifestPlaceholders = [appLabel: "LUPCE Part B"]
+        }
+        partC {
+            dimension "part"
+            applicationId "org.lupce.player.partc"
+            manifestPlaceholders = [appLabel: "LUPCE Part C"]
+        }
+        partD {
+            dimension "part"
+            applicationId "org.lupce.player.partd"
+            manifestPlaceholders = [appLabel: "LUPCE Part D"]
+        }
+        partE {
+            dimension "part"
+            applicationId "org.lupce.player.parte"
+            manifestPlaceholders = [appLabel: "LUPCE Part E"]
+        }
+        partF {
+            dimension "part"
+            applicationId "org.lupce.player.partf"
+            manifestPlaceholders = [appLabel: "LUPCE Part F"]
+        }
     }
 
     signingConfigs {
