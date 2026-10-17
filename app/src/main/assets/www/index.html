@@ -26,6 +26,10 @@ header h1{font-size:19px;margin:0;line-height:1.15}
 header .sub{font-size:13px;opacity:.85}
 header .gear{margin-left:auto;font-size:22px;width:42px;height:42px;border-radius:12px;color:#fff;flex:none}
 header .gear:hover{background:rgba(255,255,255,.12)}
+header .logo{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;cursor:default}
+header .lockbtn{background:rgba(255,255,255,.14);font-size:20px}
+header .lockbtn.on{background:#f4b63e}
+body.owner header .lockbtn{display:none}
 body.owner header{background:#4a3b8f}
 
 main{max-width:1100px;margin:0 auto;padding:18px 16px 40px}
@@ -188,12 +192,13 @@ body.app-open main{padding-bottom:120px}
 </head>
 <body>
 <header>
-  <div class="logo" aria-hidden="true">🎧</div>
+  <div class="logo" id="logoBtn" aria-hidden="true">🎧</div>
   <div>
     <h1 id="appTitle">LUPCE English Journey</h1>
     <div class="sub" id="partLabel">Listen &amp; Practise</div>
   </div>
-  <button class="gear" id="gearBtn" title="Owner Mode" aria-label="Owner Mode">⚙</button>
+  <button class="gear hidden" id="gearBtn" title="Owner Mode" aria-label="Owner Mode">⚙</button>
+  <button class="gear lockbtn hidden" id="lockBtn" title="Lock" aria-label="Lock the phone">🔒</button>
 </header>
 
 <main>
@@ -245,7 +250,6 @@ body.app-open main{padding-bottom:120px}
       <p class="hint">Tap a lesson to choose it. Then press Play.</p>
       <div class="stories" id="storyTabs"></div>
       <div id="storyBody"></div>
-      <button class="add-link" id="addLessonsLink">📂 Add a new lessons file</button>
     </section>
   </div>
 
@@ -257,7 +261,6 @@ body.app-open main{padding-bottom:120px}
       <div class="ow-stat"><span id="owCount">0 recordings</span><span id="owSize">0 MB</span></div>
       <div class="ow-grid">
         <button id="owGive" class="give">📤 Give to a parent</button>
-        <button id="owLock" class="hidden">🔒 Lock phone to LUPCE</button>
         <button id="owShareAll">📦 Share all lessons</button>
         <button id="owShareStory">📦 Share one story</button>
         <button id="owImport">📥 Import lessons</button>
@@ -683,7 +686,7 @@ function refreshChild(){
   const keepCur = tracks[cur] ? tracks[cur].key : saved.cur;
   const keepLast = last !== null && tracks[last] ? tracks[last].key : saved.last;
   tracks = buildTracks();
-  updateHeader();
+  updateHeader(); renderLock();
   if (ownerOpen) return;
   if (!tracks.length){
     document.body.classList.remove("app-open");
@@ -694,6 +697,7 @@ function refreshChild(){
     $("startText").innerHTML = NATIVE
       ? "Open the lessons file you received on <b>WhatsApp</b> and choose <b>LUPCE Part " + PART_ID + "</b>.<br>Or press the button below."
       : "Press the button below and choose the lessons file you received.<br>(Its name ends with <b>.lupce</b>.)";
+    $("startText").innerHTML += '<br><small style="opacity:.7">Owner: hold the 🎧 sign for 3 seconds.</small>';
     $("openLessonsBtn").classList.remove("hidden");
     $("mini").classList.remove("show");
     return;
@@ -963,7 +967,16 @@ async function changePin(){
 
 /* ================= OWNER MODE ================= */
 let owStory = null, previewKey = null;
-$("gearBtn").onclick = async () => { if (ownerOpen) return; if (await askPin()) openOwner(); };
+async function ownerAsk(){ if (ownerOpen) return; if (await askPin()) openOwner(); }
+$("gearBtn").onclick = ownerAsk;
+// press and hold for 3 seconds (a single tap does nothing, so the child can't open it)
+function onHold(el, fn, ms = 3000){
+  let t = null; const stop = () => { if (t){ clearTimeout(t); t = null; } };
+  el.addEventListener("pointerdown", e => { stop(); t = setTimeout(() => { t = null; if (navigator.vibrate) try { navigator.vibrate(40); } catch(x){} fn(); }, ms); });
+  ["pointerup","pointerleave","pointercancel"].forEach(n => el.addEventListener(n, stop));
+  el.addEventListener("contextmenu", e => e.preventDefault());
+}
+onHold($("logoBtn"), ownerAsk);
 function openOwner(){
   stopAudio(); audio.removeAttribute("src"); loadedIdx = null; hideBanner();
   ownerOpen = true; document.body.classList.add("owner");
@@ -999,7 +1012,6 @@ function renderOwner(){
       "<br>To make a player for another Part, copy this file and name it like <b>LUPCE Player - Part B.html</b>.";
   const hasCat = !!(catalog && catalog.stories.length);
   ["owGive","owShareAll","owShareStory","owWipe"].forEach(id => $(id).disabled = !have);
-  if (NATIVE && NATIVE.lockApp){ $("owLock").classList.remove("hidden"); $("owLock").textContent = isLocked() ? "🔓 Unlock phone (end child lock)" : "🔒 Lock phone to LUPCE"; }
   $("owOld").disabled = !hasCat;
   $("owEmpty").classList.toggle("hidden", hasCat);
   if (!hasCat) $("owEmpty").innerHTML = "<b>📚 This player has no lesson list yet.</b><br>Press <b>📚 Load lesson list from Word files</b> and choose the Word files of <b>Part " + PART_ID +
@@ -1229,13 +1241,30 @@ window.__lupceGiveDone = (ok, msg) => {
 
 /* ================= LOCK THE PHONE TO LUPCE (Android screen pinning) ================= */
 function isLocked(){ try { return !!(NATIVE && NATIVE.isLocked && NATIVE.isLocked()); } catch(e){ return false; } }
-$("owLock").onclick = async () => {
-  if (isLocked()){ NATIVE.unlockApp(); setTimeout(renderOwner, 600); tell("🔓 Unlocked", "<p>The phone is free again. Other apps can be opened.</p>"); return; }
-  const ok = await confirmBox("🔒 Lock phone to LUPCE", "<p>The child will stay inside LUPCE and cannot open YouTube, Facebook or other apps.</p>" +
-    "<p>The phone will ask <b>\"Pin app?\"</b> — press <b>Pin</b> / <b>Got it</b>.</p><p>To unlock later: open <b>⚙ Owner Mode</b> and press <b>🔓 Unlock phone</b>.</p>", "Lock now");
+function renderLock(){
+  const b = $("lockBtn"); if (!(NATIVE && NATIVE.lockApp)) return;
+  const on = isLocked(); b.classList.remove("hidden"); b.classList.toggle("on", on);
+  b.textContent = on ? "🔐" : "🔒";
+}
+setInterval(renderLock, 1500);
+$("lockBtn").onclick = async () => {
+  if (isLocked()) return; // locked: only a grown-up's long press (below) opens it
+  const ok = await confirmBox("🔒 Lock the phone to LUPCE?", "<p>The child will stay inside LUPCE and cannot open YouTube, Facebook or other apps.</p>" +
+    "<p>The phone will ask <b>\"Pin app?\"</b> — press <b>Pin</b> / <b>Got it</b>.</p><p>To unlock: <b>hold the 🔐 button for 3 seconds</b> and answer the sum.</p>", "Lock now");
   if (!ok) return;
-  closeOwner(); NATIVE.lockApp();
+  NATIVE.lockApp(); setTimeout(renderLock, 800);
 };
+async function unlockAsk(){
+  if (!isLocked()) return;
+  const a = 21 + Math.floor(Math.random() * 58), b = 13 + Math.floor(Math.random() * 59);
+  const v = await dialog({ title:"🔓 Unlock the phone", html:"<p>For a grown-up: what is <b>" + a + " + " + b + "</b> ?</p>",
+    input:{ placeholder:"Answer", max:3 }, onInput: v => Number(v) === a + b ? "" : "Not correct. Try again.",
+    buttons:[{label:"Cancel", value:null},{label:"Unlock", value:true, kind:"pri"}] });
+  if (v === null) return;
+  NATIVE.unlockApp(); setTimeout(renderLock, 800);
+  tell("🔓 Unlocked", "<p>The phone is free again. Other apps can be opened.</p>");
+}
+onHold($("lockBtn"), unlockAsk);
 $("owShareStory").onclick = async () => {
   const opts = catalog.stories.map(st => { const n = st.items.filter(it => recs[keyOf(st.n, it)]).length;
     return n ? '<button data-v="' + st.n + '">' + storyText(st.n) + " — " + esc(st.title) + " <small>(" + n + ")</small></button>" : ""; }).join("");
@@ -1275,7 +1304,6 @@ function openLessonsQuick(){
   $("pickBundle").value = ""; $("pickBundle").click();
 }
 $("openLessonsBtn").onclick = openLessonsQuick;
-$("addLessonsLink").onclick = openLessonsQuick;
 async function importBundleFile(f){
   const quick = quickImport && !ownerOpen; quickImport = false;
   try {
