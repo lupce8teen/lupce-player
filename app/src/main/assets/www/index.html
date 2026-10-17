@@ -46,7 +46,8 @@ body.app-open main{padding-bottom:120px}
 .mini-txt small{display:block;color:var(--muted);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mini button{flex:none;display:grid;place-items:center}
 .mini .mb{width:40px;height:40px;border-radius:50%;background:var(--teal-soft);color:var(--teal);font-size:16px;font-weight:800}
-.mini .ma{background:var(--orange);color:#fff;font-size:19px}
+.mini .mr{background:#f1ece2;color:#6a5a45;font-size:19px;border:2px solid #e2d8c6}
+.mini .mr.on{background:var(--orange);color:#fff;border-color:#c95f1d}
 .mini .mp{width:58px;height:58px;border-radius:50%;background:var(--teal);color:#fff;font-size:26px;box-shadow:0 4px 0 #0a4d4a}
 @media(min-width:900px){.layout{grid-template-columns:minmax(380px,460px) 1fr;align-items:start}
   .player{position:sticky;top:16px}}
@@ -276,7 +277,7 @@ body.app-open main{padding-bottom:120px}
     <div class="mini-ic" id="miniIcon">🎧</div>
     <div class="mini-txt"><b id="miniTitle">—</b><small id="miniSub">Ready. Press Play.</small></div>
   </div>
-  <button class="mb ma" id="miniAgain" aria-label="Listen Again" title="Listen Again">🔁</button>
+  <button class="mb mr" id="miniRepeat" aria-label="Repeat" aria-pressed="false" title="Repeat On / Off">🔂</button>
   <button class="mb" id="miniPrev" aria-label="Back" title="Back">◀</button>
   <button class="mp" id="miniPlay" aria-label="Play">▶</button>
   <button class="mb" id="miniNext" aria-label="Next" title="Next">▶▶</button>
@@ -709,14 +710,15 @@ async function playCurrent(){
   hideBanner();
   try {
     if (mode !== "normal" || loadedIdx !== cur){ await loadTrack(cur); audio.currentTime = 0; }
-    mode = "normal"; await audio.play();
+    if (mode !== "normal"){ heard = 0; }
+    mode = "normal"; renderRepeat(); await audio.play();
   } catch(e){ setStatus("⚠️ This audio could not be played."); mode = null; }
   renderPlayer();
 }
 async function playAgain(){
   if (last === null) return;
-  hideBanner(); audio.pause();
-  try { await loadTrack(last); audio.currentTime = 0; mode = "again"; await audio.play(); }
+  hideBanner(); audio.pause(); heard = 0;
+  try { await loadTrack(last); audio.currentTime = 0; mode = "again"; renderRepeat(); await audio.play(); }
   catch(e){ setStatus("⚠️ This audio could not be played."); mode = null; }
   renderPlayer();
 }
@@ -730,12 +732,15 @@ function renderRepeat(){
   $("repeatBtn").classList.toggle("on", repeatOn);
   $("repeatBtn").setAttribute("aria-pressed", repeatOn ? "true" : "false");
   $("repeatState").textContent = repeatOn ? "On" : "Off";
-  $("repeatNote").textContent = repeatOn ? (heard > 0 ? "Heard " + heard + (heard === 1 ? " time" : " times") + " — it will play again and again." : "The lesson will play again and again.") : "";
+  $("miniRepeat").classList.toggle("on", repeatOn);
+  $("miniRepeat").setAttribute("aria-pressed", repeatOn ? "true" : "false");
+  const looping = repeatOn || mode === "again";
+  $("repeatNote").textContent = looping ? (heard > 0 ? "Heard " + heard + (heard === 1 ? " time" : " times") + " — it will play again and again." : "The lesson will play again and again.") : "";
 }
-$("repeatBtn").onclick = () => { repeatOn = !repeatOn; heard = 0; renderRepeat(); };
+$("repeatBtn").onclick = () => { repeatOn = !repeatOn; heard = 0; renderRepeat(); renderPlayer(); };
 audio.addEventListener("ended", () => {
   if (mode === "preview"){ mode = null; previewKey = null; renderOwnerList(); return; }
-  if (repeatOn && mode){
+  if ((repeatOn && mode) || mode === "again"){   // Listen Again always plays again and again
     if (mode === "normal"){ saved.done[tracks[cur].key] = 1; last = cur; saved.last = tracks[last].key; save(); }
     heard++; renderRepeat();
     if (NATIVE){
@@ -820,7 +825,7 @@ function renderPlayer(){
     const a = tracks[last];
     $("againStrip").textContent = "🔁 Listening again: " + listenText(a) + " — " + a.title;
     $("againStrip").classList.remove("hidden");
-    setStatus(playing ? "Listening again…" : "⏸ Paused");
+    setStatus(playing ? "🔁 Listening again… it will repeat. Press Pause to stop." : "⏸ Paused");
   } else {
     $("againStrip").classList.add("hidden");
     if (mode === "normal") setStatus(playing ? (repeatOn ? "🔂 Playing… it will repeat. Press Pause to stop." : "▶ Playing… listen carefully.") : "⏸ Paused");
@@ -837,13 +842,12 @@ function renderPlayer(){
   // mini player
   $("miniIcon").textContent = iconFor(t);
   $("miniTitle").textContent = t.title;
-  $("miniSub").textContent = mode === "again" ? (playing ? "🔁 Listening again…" : "⏸ Paused")
-    : (mode === "normal" ? (playing ? "▶ Playing · " : "⏸ Paused · ") : "") + listenText(t).replace("🎧 Listen ","L ").replace(" Point ","-");
+  $("miniSub").textContent = mode === "again" ? (playing ? "🔁 Repeating last lesson…" : "⏸ Paused")
+    : (mode === "normal" ? (playing ? (repeatOn ? "🔂 Repeating · " : "▶ Playing · ") : "⏸ Paused · ") : (repeatOn ? "🔂 Repeat on · " : "")) + listenText(t).replace("🎧 Listen ","L ").replace(" Point ","-");
   $("miniPlay").textContent = playing ? "⏸" : "▶";
   $("miniPlay").setAttribute("aria-label", playing ? "Pause" : "Play");
   $("miniPrev").disabled = cur === 0;
   $("miniNext").disabled = cur === tracks.length - 1;
-  $("miniAgain").disabled = last === null;
 }
 
 function renderList(){
@@ -896,7 +900,7 @@ function renderAll(){ renderPlayer(); renderList(); }
 $("playBtn").onclick = onPlayBtn;
 $("againBtn").onclick = playAgain;
 $("miniPlay").onclick = onPlayBtn;
-$("miniAgain").onclick = playAgain;
+$("miniRepeat").onclick = () => $("repeatBtn").click();
 $("miniPrev").onclick = () => select(cur - 1);
 $("miniNext").onclick = () => select(cur + 1);
 // show the mini player only while the big Play button is out of sight
