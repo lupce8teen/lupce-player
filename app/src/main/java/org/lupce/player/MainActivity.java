@@ -82,6 +82,8 @@ public class MainActivity extends Activity {
     private String pendingManifest = null;
     private String pendingFileName = null;
     private Uri pendingBundle = null;
+    private Uri externalFile = null;      // a lessons file opened from WhatsApp / Files ("Open with LUPCE")
+    private boolean pageReady = false;
     private final List<String> docxNames = new ArrayList<>();
     private final List<String> docxXml = new ArrayList<>();
 
@@ -130,6 +132,12 @@ public class MainActivity extends Activity {
             }
 
             @Override
+            public void onPageFinished(WebView view, String url) {
+                pageReady = true;
+                openExternalFile();
+            }
+
+            @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri u = request.getUrl();
                 return !HOST.equals(u.getHost()); // never leave the app
@@ -137,6 +145,39 @@ public class MainActivity extends Activity {
         });
         web.addJavascriptInterface(new Bridge(), "LupceAndroid");
         web.loadUrl(START_URL);
+        takeFileFrom(getIntent());
+    }
+
+    /* ---------- a lessons file opened from another app (WhatsApp, Files …) ---------- */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        takeFileFrom(intent);
+        openExternalFile();
+    }
+
+    private void takeFileFrom(Intent intent) {
+        if (intent == null) return;
+        Uri u = null;
+        if (Intent.ACTION_VIEW.equals(intent.getAction())) u = intent.getData();
+        else if (Intent.ACTION_SEND.equals(intent.getAction())) {
+            Object o = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+            if (o instanceof Uri) u = (Uri) o;
+        }
+        if (u != null) {
+            externalFile = u;
+            setIntent(new Intent(Intent.ACTION_MAIN)); // do not open it twice
+        }
+    }
+
+    private void openExternalFile() {
+        if (!pageReady || externalFile == null) return;
+        final Uri u = externalFile;
+        externalFile = null;
+        pendingBundle = u;
+        busy("Getting the lessons ready…");
+        new Thread(() -> readBundleInfo(u, true)).start();
     }
 
     /* ---------- the page is served from the app's own files ---------- */
@@ -298,7 +339,7 @@ public class MainActivity extends Activity {
                 pendingBundle = data.getData();
                 busy("Opening the file…");
                 final Uri u = pendingBundle;
-                new Thread(() -> readBundleInfo(u)).start();
+                new Thread(() -> readBundleInfo(u, false)).start();
                 break;
             }
             case SAVE_BUNDLE: {
@@ -540,14 +581,14 @@ public class MainActivity extends Activity {
             }
         }
     }
-    private void readBundleInfo(Uri u) {
+    private void readBundleInfo(Uri u, boolean external) {
         try (InputStream raw = getContentResolver().openInputStream(u);
              ZipInputStream zip = new ZipInputStream(new BufferedInputStream(raw))) {
             ZipEntry e;
             while ((e = zip.getNextEntry()) != null) {
                 if ("lupce.json".equals(e.getName())) {
                     String json = new String(readAll(zip), StandardCharsets.UTF_8);
-                    runJs("window.__lupceBundleInfo && window.__lupceBundleInfo(" + jsString(json) + ")");
+                    runJs("window.__lupceBundleInfo && window.__lupceBundleInfo(" + jsString(json) + "," + external + ")");
                     return;
                 }
             }

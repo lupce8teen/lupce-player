@@ -177,6 +177,8 @@ body.app-open main{padding-bottom:120px}
 .dlg .btns button.warn{background:var(--red);color:#fff}
 .dlg .list-btns{display:grid;gap:6px;margin-top:8px}
 .dlg .list-btns button{text-align:left;padding:12px 14px;border-radius:14px;background:#f6f1e7;font-weight:700}
+.add-link{display:block;margin:18px auto 0;color:var(--muted);font-size:13.5px;text-decoration:underline;padding:6px 10px}
+.drop-on main{outline:4px dashed var(--teal);outline-offset:-10px}
 .dlg .link{color:var(--teal);text-decoration:underline;font-size:14px;margin-top:6px}
 .prog{height:12px;border-radius:9px;background:#efe6d6;overflow:hidden;margin-top:12px}
 .prog i{display:block;height:100%;width:0;background:var(--teal);transition:width .2s}
@@ -198,6 +200,7 @@ body.app-open main{padding-bottom:120px}
     <div class="big-emoji" id="startEmoji">⏳</div>
     <h2 id="startTitle">Opening…</h2>
     <p id="startText">Please wait a moment.</p>
+    <button class="btn-main hidden" id="openLessonsBtn">📂 Open lessons file</button>
   </section>
 
   <!-- PLAYER -->
@@ -240,6 +243,7 @@ body.app-open main{padding-bottom:120px}
       <p class="hint">Tap a lesson to choose it. Then press Play.</p>
       <div class="stories" id="storyTabs"></div>
       <div id="storyBody"></div>
+      <button class="add-link" id="addLessonsLink">📂 Add a new lessons file</button>
     </section>
   </div>
 
@@ -681,7 +685,10 @@ function refreshChild(){
     $("startView").classList.remove("hidden");
     $("startEmoji").textContent = "🎙️";
     $("startTitle").textContent = "No lessons yet";
-    $("startText").innerHTML = "A grown-up can add the recordings.<br>Press <b>⚙</b> at the top and enter the PIN.";
+    $("startText").innerHTML = NATIVE
+      ? "Open the lessons file you received on <b>WhatsApp</b> and choose <b>LUPCE Part " + PART_ID + "</b>.<br>Or press the button below."
+      : "Press the button below and choose the lessons file you received.<br>(Its name ends with <b>.lupce</b>.)";
+    $("openLessonsBtn").classList.remove("hidden");
     $("mini").classList.remove("show");
     return;
   }
@@ -689,6 +696,7 @@ function refreshChild(){
   const li = tracks.findIndex(t => t.key === keepLast); last = li >= 0 ? li : null;
   viewStory = tracks[cur].story;
   $("startView").classList.add("hidden");
+  $("openLessonsBtn").classList.add("hidden");
   $("ownerView").classList.add("hidden");
   document.body.classList.add("app-open");
   $("appView").classList.remove("hidden");
@@ -1179,28 +1187,45 @@ function checkManifest(m){
   const id = String(m.part.id || "").toUpperCase();
   if (id && id !== PART_ID)
     return "This file is for <b>Part " + esc(id) + "</b>, but this player is for <b>Part " + PART_ID + "</b>.<br>" +
-      (NATIVE ? "Please open it in the <b>LUPCE Part " + esc(id) + "</b> app." : (id === "A" ? "Please open it in the main <b>LUPCE Player.html</b>." : "Please open it in a player file named like <b>LUPCE Player - Part " + esc(id) + ".html</b>."));
+      (NATIVE ? "Please open it in the <b>LUPCE Part " + esc(id) + "</b> app." : "Please open it in <b>LUPCE Player - Part " + esc(id) + ".html</b>.");
   return "";
 }
 async function confirmImport(m){
   const n = Object.keys(m.recordings || {}).length;
   return confirmBox("📥 Import lessons", "<p><b>" + esc(partName(m.part)) + "</b> · " + storyRange(m.part) + "</p><p><b>" + n + "</b> recordings will be added. If a lesson already has a recording, it will be replaced. Other recordings stay.</p>", "Import");
 }
-$("owImport").onclick = () => { stopPreview(); if (NATIVE){ NATIVE.importBundle(); return; } $("pickBundle").value = ""; $("pickBundle").click(); };
-$("pickBundle").addEventListener("change", async e => {
-  const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f) return;
+$("owImport").onclick = () => { stopPreview(); quickImport = false; if (NATIVE){ NATIVE.importBundle(); return; } $("pickBundle").value = ""; $("pickBundle").click(); };
+let quickImport = false;   // true = opened by a parent from the child's page: no questions, straight to the lessons
+function importDoneMessage(ok, count, msg){
+  if (!ok){ tell("⚠️ Could not open", "<p>" + esc(msg || "The file could not be read.") + "</p>"); return; }
+  if (ownerOpen){ tell("✅ Imported", "<p><b>" + count + "</b> recordings were added.</p>"); return; }
+  tell("🎉 Lessons are ready!", "<p><b>" + count + "</b> lessons are ready.</p><p>Choose a lesson and press <b>▶ Play</b>.</p>");
+}
+function afterImport(){
+  if (catalog && !catalog.stories.some(s => s.n === owStory)) owStory = catalog.stories[0] && catalog.stories[0].n;
+  if (ownerOpen) renderOwner(); else refreshChild();
+}
+function openLessonsQuick(){
+  quickImport = true;
+  if (NATIVE){ NATIVE.importBundle(); return; }
+  $("pickBundle").value = ""; $("pickBundle").click();
+}
+$("openLessonsBtn").onclick = openLessonsQuick;
+$("addLessonsLink").onclick = openLessonsQuick;
+async function importBundleFile(f){
+  const quick = quickImport && !ownerOpen; quickImport = false;
   try {
-    busy("Opening the file…");
+    busy(quick ? "Getting the lessons ready…" : "Opening the file…");
     const ents = await zipEntries(f);
     const je = ents.find(x => x.name === "lupce.json"); if (!je) throw new Error("This is not a LUPCE lessons file.");
     const m = JSON.parse(await (await zipRead(f, je)).text());
     busyEnd();
     const bad = checkManifest(m); if (bad){ tell("⚠️ Wrong file", "<p>" + bad + "</p>"); return; }
-    if (!await confirmImport(m)) return;
+    if (!quick && !await confirmImport(m)) return;
     const byName = {}; for (const x of ents) byName[x.name] = x;
     const list = Object.entries(m.recordings || {}); let ok = 0, i = 0;
     for (const [k, r] of list){
-      busy("Importing… " + (++i) + " / " + list.length, i / list.length);
+      busy((quick ? "Getting the lessons ready… " : "Importing… ") + (++i) + " / " + list.length, i / list.length);
       const ze = byName[r.file]; if (!ze) continue;
       const b = await zipRead(f, ze);
       const blob = b.slice(0, b.size, r.type || ("audio/" + (extOf(r.file) === "mp3" ? "mpeg" : extOf(r.file))));
@@ -1208,27 +1233,41 @@ $("pickBundle").addEventListener("change", async e => {
       ok++;
     }
     catalog = m.part; await Store.setCatalog(catalog); await reloadRecs(); busyEnd();
-    if (!catalog.stories.some(s => s.n === owStory)) owStory = catalog.stories[0] && catalog.stories[0].n;
-    renderOwner(); tell("✅ Imported", "<p><b>" + ok + "</b> recordings were added.</p>");
-  } catch(err){ busyEnd(); tell("⚠️ Could not import", "<p>" + esc(err.message || err) + "</p>"); }
+    afterImport(); importDoneMessage(true, ok);
+  } catch(err){ busyEnd(); importDoneMessage(false, 0, err.message || String(err)); }
+}
+$("pickBundle").addEventListener("change", e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f){ quickImport = false; return; }
+  importBundleFile(f);
+});
+// computer: a lessons file can also be dragged onto the player
+document.addEventListener("dragover", e => { if (NATIVE || !e.dataTransfer || ![...e.dataTransfer.types].includes("Files")) return; e.preventDefault(); document.body.classList.add("drop-on"); });
+document.addEventListener("dragleave", e => { if (!e.relatedTarget) document.body.classList.remove("drop-on"); });
+document.addEventListener("drop", e => {
+  if (NATIVE || !e.dataTransfer) return;
+  e.preventDefault(); document.body.classList.remove("drop-on");
+  const f = [...e.dataTransfer.files].find(x => /\.(lupce|zip)$/i.test(x.name));
+  if (!f){ if (e.dataTransfer.files.length) tell("⚠️ Wrong file", "<p>Please drop the LUPCE lessons file (its name ends with <b>.lupce</b>).</p>"); return; }
+  if (dlgStack.length || busyEl) return;
+  quickImport = !ownerOpen; importBundleFile(f);
 });
 // Android: the app reads the file, shows us its list first, then copies the audio.
-window.__lupceBundleInfo = async (json) => {
+// external = the file was opened from WhatsApp / Files with "Open with LUPCE".
+window.__lupceBundleInfo = async (json, external) => {
   busyEnd();
+  const quick = (external || quickImport) && !ownerOpen; quickImport = false;
   let m = null; try { m = JSON.parse(json); } catch(e){}
   const bad = checkManifest(m); if (bad){ NATIVE.importBundleGo(false); tell("⚠️ Wrong file", "<p>" + bad + "</p>"); return; }
-  if (!await confirmImport(m)){ NATIVE.importBundleGo(false); return; }
-  window.__lupcePendingCatalog = m.part;
-  busy("Importing…", 0); NATIVE.importBundleGo(true);
+  if (!quick && !await confirmImport(m)){ NATIVE.importBundleGo(false); return; }
+  window.__lupcePendingCatalog = m.part; window.__lupceQuick = quick;
+  busy(quick ? "Getting the lessons ready…" : "Importing…", 0); NATIVE.importBundleGo(true);
 };
-window.__lupceImportProgress = (done, total) => busy("Importing… " + done + " / " + total, total ? done / total : 0);
+window.__lupceImportProgress = (done, total) => busy((window.__lupceQuick ? "Getting the lessons ready… " : "Importing… ") + done + " / " + total, total ? done / total : 0);
 window.__lupceImportDone = async (ok, count, msg) => {
   if (ok && window.__lupcePendingCatalog){ catalog = window.__lupcePendingCatalog; await Store.setCatalog(catalog); }
-  window.__lupcePendingCatalog = null;
+  window.__lupcePendingCatalog = null; window.__lupceQuick = false;
   await reloadRecs(); busyEnd();
-  if (catalog && !catalog.stories.some(s => s.n === owStory)) owStory = catalog.stories[0] && catalog.stories[0].n;
-  renderOwner();
-  tell(ok ? "✅ Imported" : "⚠️ Could not import", "<p>" + (ok ? "<b>" + count + "</b> recordings were added." : esc(msg || "The file could not be read.")) + "</p>");
+  afterImport(); importDoneMessage(ok, count, msg);
 };
 window.__lupceBusy = t => busy(esc(t || "Please wait…"));
 window.__lupceBusyEnd = () => busyEnd();
