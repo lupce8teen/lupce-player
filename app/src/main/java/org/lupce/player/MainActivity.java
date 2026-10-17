@@ -1,6 +1,7 @@
 package org.lupce.player;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.ClipData;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -261,6 +262,25 @@ public class MainActivity extends Activity {
         @JavascriptInterface public void exportBundle(String manifestJson, String fileName, boolean send) {
             main.post(() -> startExport(manifestJson, fileName, send));
         }
+        // give a parent the app (or the computer player) together with all lessons
+        @JavascriptInterface public void giveToParent(String manifestJson, String lessonsName, String target) {
+            new Thread(() -> runGive(manifestJson, lessonsName, "computer".equals(target))).start();
+        }
+        // keep the child inside LUPCE (Android screen pinning)
+        @JavascriptInterface public void lockApp() {
+            main.post(() -> { try { startLockTask(); } catch (Exception e) { sendError("This phone could not lock to the app."); } });
+        }
+        @JavascriptInterface public void unlockApp() {
+            main.post(() -> { try { stopLockTask(); } catch (Exception ignored) { } });
+        }
+        @JavascriptInterface public boolean isLocked() {
+            try {
+                ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+                if (Build.VERSION.SDK_INT >= 23) return am.getLockTaskModeState() != ActivityManager.LOCK_TASK_MODE_NONE;
+                return am.isInLockTaskMode();
+            } catch (Exception e) { return false; }
+        }
+
         @JavascriptInterface public void importBundle() {
             main.post(() -> {
                 Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -534,6 +554,41 @@ public class MainActivity extends Activity {
             });
         }).start();
     }
+    private void runGive(String manifest, String lessonsName, boolean forComputer) {
+        cleanShareDir();
+        String part = partLetter();
+        File lessons = new File(shareDir(), lessonsName.replaceAll("[\\\\/:*?\"<>|]", " "));
+        File player = new File(shareDir(), forComputer ? "LUPCE Player - Part " + part + ".html" : "LUPCE-Part-" + part + ".apk");
+        try {
+            try (OutputStream out = new FileOutputStream(lessons)) { writeBundle(manifest, out); }
+            InputStream src = forComputer ? getAssets().open("www/index.html")
+                                          : new FileInputStream(getApplicationInfo().sourceDir);
+            copyStream(src, player);
+        } catch (Exception e) {
+            lessons.delete(); player.delete();
+            runJs("window.__lupceGiveDone && window.__lupceGiveDone(false," + jsString("The files could not be made. The phone may be out of space.") + ")");
+            return;
+        }
+        main.post(() -> {
+            ArrayList<Uri> uris = new ArrayList<>();
+            uris.add(shareUri(player.getName()));
+            uris.add(shareUri(lessons.getName()));
+            Intent s = new Intent(Intent.ACTION_SEND_MULTIPLE);
+            s.setType("*/*");
+            s.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+            s.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            try {
+                startActivity(Intent.createChooser(s, "Give LUPCE to a parent"));
+                runJs("window.__lupceGiveDone && window.__lupceGiveDone(true,'')");
+            } catch (Exception e) {
+                runJs("window.__lupceGiveDone && window.__lupceGiveDone(false," + jsString("No app was found to send the files.") + ")");
+            }
+        });
+    }
+    private Uri shareUri(String name) {
+        return new Uri.Builder().scheme("content").authority(getPackageName() + ".share").appendPath(name).build();
+    }
+
     private void writeBundle(String manifest, OutputStream rawOut) throws Exception {
         JSONObject m = new JSONObject(manifest);
         JSONObject recs = m.optJSONObject("recordings");
@@ -940,7 +995,12 @@ public class MainActivity extends Activity {
                 return c;
             } catch (Exception e) { return null; }
         }
-        @Override public String getType(Uri uri) { return "application/octet-stream"; }
+        @Override public String getType(Uri uri) {
+            String n = uri.getLastPathSegment() == null ? "" : uri.getLastPathSegment().toLowerCase(Locale.ROOT);
+            if (n.endsWith(".apk")) return "application/vnd.android.package-archive";
+            if (n.endsWith(".html")) return "text/html";
+            return "application/octet-stream";
+        }
         @Override public ParcelFileDescriptor openFile(Uri uri, String mode) throws FileNotFoundException {
             return ParcelFileDescriptor.open(fileFor(uri), ParcelFileDescriptor.MODE_READ_ONLY);
         }
