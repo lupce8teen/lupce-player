@@ -1,0 +1,37 @@
+name: Build LUPCE Player APK
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Build the apps (Part A to Part F)
+        run: gradle assembleRelease --no-daemon --stacktrace
+
+      - name: Name the APKs
+        run: |
+          cp app/build/outputs/apk/partA/release/app-partA-release.apk LUPCE-Part-A.apk
+          cp app/build/outputs/apk/partB/release/app-partB-release.apk LUPCE-Part-B.apk
+          cp app/build/outputs/apk/partC/release/app-partC-release.apk LUPCE-Part-C.apk
+          cp app/build/outputs/apk/partD/release/app-partD-release.apk LUPCE-Part-D.apk
+          cp app/build/outputs/apk/partE/release/app-partE-release.apk LUPCE-Part-E.apk
+          cp app/build/outputs/apk/partF/release/app-partF-release.apk LUPCE-Part-F.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: LUPCE-Player-APK
+          path: LUPCE-Part-*.apk
